@@ -1,19 +1,20 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#050305">
-  <meta name="description" content="Xyfer.">
-  <title>Xyfer</title>
-  <style>
-    * { box-sizing: border-box; }
-    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #050305; }
-    main { position: fixed; inset: 0; overflow: hidden; }
-    object { display: block; width: 100%; height: 100%; border: 0; }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#050305"><title>Xyfer</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;background:#050305;color:#f6eef0;font-family:Arial,Helvetica,sans-serif}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer}a{color:inherit}.backdrop{position:fixed;inset:0;width:100%;height:100%;border:0;pointer-events:none}.backdrop.library{opacity:.45}header{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:3;display:flex;padding:5px;gap:4px;border:1px solid #ffffff20;border-radius:40px;background:#10090bb8;backdrop-filter:blur(20px)}header a{padding:11px 24px;border-radius:30px;text-decoration:none;font-size:13px;color:#c8b8bd}header a[aria-current=page]{background:#ffffff12;color:white}a:focus-visible,button:focus-visible{outline:2px solid #ff4769;outline-offset:4px}main{position:fixed;inset:110px 0 0;overflow:auto;padding:42px max(24px,8vw)}[hidden]{display:none!important}h1{font-size:clamp(38px,6vw,68px);letter-spacing:-3px;margin:0 0 36px;font-weight:500}.game{display:block;width:min(100%,370px);text-align:left;color:inherit;background:#150c10b8;border:1px solid #ffffff20;border-radius:22px;padding:0;overflow:hidden;transition:transform .2s,border-color .2s}.game:hover{transform:translateY(-5px);border-color:#e83a60}.art{height:190px;display:grid;place-items:center;background:radial-gradient(ellipse at 70% 20%,#a82748,transparent 70%),linear-gradient(140deg,#220b13,#090608)}.cube{width:70px;height:70px;border:4px solid #ffc2ce;transform:rotate(-12deg);box-shadow:10px 10px 0 #e3375a55;display:flex;align-items:center;justify-content:center;gap:14px}.cube:before,.cube:after{content:'';width:10px;height:15px;background:#ffc2ce}.details{display:flex;justify-content:space-between;align-items:center;padding:24px;font-size:20px;letter-spacing:-.5px}.details span:last-child{color:#ff7490}.credits{font-size:12px;color:#ae939c;line-height:1.7;margin-top:22px}.player{position:fixed;inset:0;z-index:5;background:#050305;display:flex;flex-direction:column}.toolbar{height:64px;flex-shrink:0;display:flex;align-items:center;gap:20px;padding:12px 20px;border-bottom:1px solid #ffffff20}.toolbar strong{font-weight:500;font-size:14px;flex:1}.toolbar button,.toolbar a{background:#ffffff0b;border:1px solid #ffffff20;border-radius:8px;padding:9px 14px;color:white;text-decoration:none;font-size:12px}iframe{width:100%;flex:1;border:0;min-height:0}.status{color:#b99fa7;font-size:12px}@media(max-width:600px){main{padding-top:25px}.toolbar{gap:8px;padding:10px}.toolbar strong{font-size:12px}.status{display:none}}@media(prefers-reduced-motion:reduce){.game{transition:none}}
+</style>
 </head>
 <body>
-  <main aria-label="Xyfer"><object type="image/svg+xml" data="index.svg" aria-label="Xyfer">Xyfer</object></main>
-</body>
-</html>
+<object class="backdrop" type="image/svg+xml" data="background.svg" aria-label="Xyfer animated background"></object>
+<header aria-label="Main navigation"><a href="#home" id="home-link">Home</a><a href="#games" id="games-link">Games</a></header>
+<main id="games" hidden><h1>Games</h1><button class="game" id="play" aria-label="Play Geometry Dash"><div class="art" aria-hidden="true"><div class="cube"></div></div><div class="details"><span>Geometry Dash</span><span aria-hidden="true">↗</span></div></button><p class="credits">Web port by <a href="https://github.com/AlexBoops/geometry-dash-webport" target="_blank" rel="noopener">AlexBoops</a> · Original port credit: bog / truffled<br>The game downloads on launch. Initial loading may take a while.</p></main>
+<section class="player" id="player" aria-label="Geometry Dash player" hidden><div class="toolbar"><button id="back">← Games</button><strong>Geometry Dash</strong><span class="status" id="status" role="status">Loading player…</span><a href="games/geometry-dash/" target="_blank" rel="noopener">Open separately ↗</a><button id="fullscreen">Fullscreen</button></div><iframe id="frame" title="Geometry Dash" allow="autoplay; fullscreen; gamepad" allowfullscreen></iframe></section>
+<script>
+const games=document.querySelector('#games'),player=document.querySelector('#player'),frame=document.querySelector('#frame'),background=document.querySelector('.backdrop');
+function route(){const active=location.hash==='#games';games.hidden=!active;background.classList.toggle('library',active);for(const name of ['home','games']){const link=document.querySelector('#'+name+'-link');if((name==='games')===active)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current')}if(!player.hidden)closePlayer()}
+function closePlayer(){player.hidden=true;frame.removeAttribute('src');if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});document.querySelector('#play').focus()}
+document.querySelector('#play').onclick=()=>{player.hidden=false;document.querySelector('#status').textContent='Loading player…';frame.src='games/geometry-dash/';frame.focus()};frame.onload=()=>{if(frame.hasAttribute('src'))document.querySelector('#status').textContent='Click the game to start'};document.querySelector('#back').onclick=closePlayer;document.querySelector('#fullscreen').onclick=()=>player.requestFullscreen().catch(()=>{document.querySelector('#status').textContent='Use Open separately for a larger view'});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!player.hidden&&!document.fullscreenElement)closePlayer()});addEventListener('hashchange',route);route();
+</script>
+</body></html>

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display:block;width:100vw;height:100vh;overflow:hidden" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-labelledby="title desc">
+  <title id="title">Xyfer</title>
+  <desc id="desc">A silver Xyfer wordmark above shifting pools and ribbons of crimson light on black.</desc>
+  <defs>
+    <radialGradient id="red">
+      <stop stop-color="#ed123e" stop-opacity=".85"/>
+      <stop offset=".42" stop-color="#9c0926" stop-opacity=".65"/>
+      <stop offset="1" stop-color="#140207" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="silk" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ff4660" stop-opacity="0"/>
+      <stop offset=".48" stop-color="#dc1637" stop-opacity=".6"/>
+      <stop offset=".62" stop-color="#720b20" stop-opacity=".25"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="type" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fff"/>
+      <stop offset="1" stop-color="#ad9ba1"/>
+    </linearGradient>
+    <radialGradient id="vignette">
+      <stop offset=".3" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".8"/>
+    </radialGradient>
+    <filter id="blur" x="-50%" y="-80%" width="200%" height="260%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+    <style>
+      .glow{transform-origin:960px 540px;animation:breathe 9s ease-in-out infinite alternate}
+      .ribbon{transform-origin:960px 540px;animation:flow 11s ease-in-out infinite alternate}
+      .second{animation-delay:-7s;animation-duration:14s;animation-direction:alternate-reverse}
+      .pool{transform-box:fill-box;transform-origin:center;animation:drift 8s ease-in-out infinite alternate}
+      .pool:nth-child(2){animation-delay:-5s;animation-duration:11s}
+      .pool:nth-child(3){animation-delay:-3s;animation-duration:9s;animation-direction:alternate-reverse}
+      .pool:nth-child(4){animation-delay:-7s;animation-duration:13s}
+      @keyframes breathe{from{transform:translate(-180px,100px) scale(.85) rotate(-12deg)}to{transform:translate(180px,-150px) scale(1.2) rotate(12deg)}}
+      @keyframes flow{0%{transform:translate(-160px,140px) rotate(-16deg) scaleY(.7)}50%{transform:translate(50px,-90px) rotate(5deg) scaleY(1.15)}100%{transform:translate(180px,-160px) rotate(18deg) scaleY(.8)}}
+      @keyframes drift{0%{transform:translate(-160px,90px) rotate(-25deg) scale(.75,1.2)}50%{transform:translate(80px,-130px) rotate(15deg) scale(1.1,.7)}100%{transform:translate(230px,80px) rotate(40deg) scale(.9,1.3)}}
+      @media(prefers-reduced-motion:reduce){.glow,.ribbon,.pool{animation:none}}
+    </style>
+  </defs>
+  <path fill="#050305" d="M0 0h1920v1080H0z"/>
+  <g class="glow">
+    <ellipse cx="1260" cy="850" rx="620" ry="380" fill="url(#red)" opacity=".65"/>
+    <ellipse cx="190" cy="260" rx="420" ry="370" fill="url(#red)" opacity=".45"/>
+  </g>
+  <g fill="url(#red)">
+    <ellipse class="pool" cx="430" cy="730" rx="380" ry="210"/>
+    <ellipse class="pool" cx="1460" cy="310" rx="350" ry="170" opacity=".8"/>
+    <ellipse class="pool" cx="1020" cy="970" rx="280" ry="230"/>
+    <ellipse class="pool" cx="710" cy="150" rx="260" ry="140" opacity=".6"/>
+  </g>
+  <g filter="url(#blur)">
+    <path class="ribbon" d="M-360 1060C200 80 440 1250 1080 650S1740 40 2220 420L2220 680C1630 240 1520 1010 1000 940S200 420-360 1280Z" fill="url(#silk)"/>
+    <path class="ribbon second" d="M-270 670C400 1300 700 170 1260 620S1850 1330 2190 770L2190 1010C1680 1550 1450 780 1140 800S300 1520-270 830Z" fill="url(#silk)" opacity=".65"/>
+  </g>
+  <path fill="url(#vignette)" d="M0 0h1920v1080H0z"/>
+  <text x="960" y="565" text-anchor="middle" fill="url(#type)" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="154" font-weight="600" letter-spacing="-9">Xyfer</text>
+</svg>

@@ -1,19 +1,17 @@
 # Xyfer
 
-A title-only landing page with animated red and black gradients. No build, dependencies, tracking, or external assets.
+Animated red and black landing page with a Games library.
 
-Upload `index.svg` and `index.html` to the **public** GitHub repository `xmeoo/xyferlove`, on branch `main`.
+- Website: https://xmeoo.github.io/xyferlove/
+- Games: https://xmeoo.github.io/xyferlove/#games
+- SVG landing: https://cdn.jsdelivr.net/gh/xmeoo/xyferlove@main/index.svg
 
-The SVG will then be available at:
+The SVG Games link opens the HTML library on GitHub Pages. jsDelivr serves HTML as text and cannot host the interactive player itself.
 
-https://cdn.jsdelivr.net/gh/xmeoo/xyferlove@main/index.svg
+## Geometry Dash
 
-This URL is a static SVG document. `index.html` is also included for conventional web hosting such as GitHub Pages. SVG animation respects reduced-motion preferences. The full-bleed composition crops to the viewport while keeping the title centered.
+`games/geometry-dash/index.html` adapts the loader from https://github.com/AlexBoops/geometry-dash-webport at commit c6ac9417ff93ea957425b23ee87f1ed290663ebb. Original upstream credit: bog / truffled. The game binaries and images load from that pinned upstream repository through jsDelivr; no binaries are copied into this repository.
 
-## Backend
+Changes to the upstream loader: correct and pin asset URLs, remove analytics, and remove root service-worker registration for compatibility with project Pages hosting. Upstream online level services depend on third-party proxies. Initial game downloads total approximately 367 MB; desktop browsers are recommended.
 
-There is no backend in this initial title-only version. GitHub file hosting and jsDelivr cannot execute private server code. Public files cannot contain secrets, even if obfuscated or encrypted with a key included in the client. A future backend needs a separately hosted HTTPS API, server-side secrets, authentication where needed, and encrypted storage where appropriate.
-
-## Updates
-
-jsDelivr caches files, so branch-based URLs may take time to reflect updates. Use a commit SHA in place of `main` for an exact version.
+No private backend or secrets are included.
