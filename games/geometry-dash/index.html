@@ -10,7 +10,7 @@
 
 
 
-<script type="module" src="../../runtime/loader.mjs?v=5"></script>
+<script type="module" src="../../runtime/loader.mjs?v=6"></script>
 <script>
 window.__CDN_BASE = null;
 
@@ -484,6 +484,7 @@ var Module = {
     }
   },
   onRuntimeInitialized: function () {
+    if(window.parent!==window)window.parent.postMessage({type:'xyfer-game-ready'},location.origin);
     window.__gdRuntimeReady = true;
     if (!GD_DEBUG && Module._gd_log_set) Module._gd_log_set(0);
     if (/[?&]noauto/.test(location.search) && Module._gd_autosave_set) Module._gd_autosave_set(0);
@@ -524,6 +525,7 @@ var started = false;
 async function gdStart() {
   if (started) return;
   started = true;
+  if(window.parent!==window)window.parent.postMessage({type:'xyfer-game-loading'},location.origin);
   window.__gdLoadStarted = true;
   resetProgress();
   var startEl = document.getElementById('start');
@@ -573,6 +575,7 @@ async function gdStart() {
     const overlay = document.getElementById('errOverlay');
     overlay.textContent = 'Unable to load. Please reload and try again.';
     overlay.classList.add('on');
+    if(window.parent!==window)window.parent.postMessage({type:'xyfer-game-error'},location.origin);
     document.getElementById('network-status').textContent = 'Unable to load. Please retry.';
   }
 }

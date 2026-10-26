@@ -45,16 +45,23 @@ async function start() {
     codec: { encode: packAddress, decode: unpackAddress },
     flags: { rewriterLogs: false, syncxhr: false, interceptDownloads: false },
   });
-  await controller.init();
   phase = 'S4';
-  const registration = await navigator.serviceWorker.register(new URL('worker.js?v=5', root), { scope: root.pathname });
-  await navigator.serviceWorker.ready;
-  if (navigator.serviceWorker.controller?.scriptURL !== registration.active?.scriptURL) {
-    await new Promise((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('Download worker did not activate. Reload the page.')), 15000);
-      navigator.serviceWorker.addEventListener('controllerchange', () => { clearTimeout(timer); resolve(); }, { once: true });
-    });
-  }
+  const workerURL = new URL('worker.js?v=6', root).href;
+  await navigator.serviceWorker.register(workerURL, { scope: root.pathname, updateViaCache: 'none' });
+  await new Promise((resolve, reject) => {
+    const check = () => {
+      if (navigator.serviceWorker.controller?.scriptURL === workerURL) finish();
+    };
+    const finish = error => {
+      clearTimeout(timer);
+      navigator.serviceWorker.removeEventListener('controllerchange', check);
+      error ? reject(error) : resolve();
+    };
+    const timer = setTimeout(() => finish(new Error('Download worker did not activate. Reload the page.')), 20000);
+    navigator.serviceWorker.addEventListener('controllerchange', check);
+    check();
+  });
+  await controller.init();
   return controller;
 }
 
@@ -102,4 +109,4 @@ export function resourceAddress(value) {
 window.xyferDownload = loadResource;
 window.xyferAddress = resourceAddress;
 
-if(window.parent!==window)window.parent.postMessage({type:'xyfer-ready'},location.origin);
+if(window.parent!==window)window.parent.postMessage({type:'xyfer-player-ready'},location.origin);
