@@ -29,7 +29,7 @@ async function start() {
   phase = 'S3';
   await new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.src = new URL('vendor/engine/index.js?v=3', import.meta.url).href;
+    script.src = new URL('vendor/engine/index.js?v=8', import.meta.url).href;
     script.onload = resolve;
     script.onerror = () => reject(new Error('Could not load the download engine'));
     document.head.append(script);
@@ -38,7 +38,7 @@ async function start() {
   controller = new ScramjetController({
     prefix: new URL('runtime/data/', root).pathname,
     files: {
-      all: new URL('vendor/engine/index.js?v=3', import.meta.url).href,
+      all: new URL('vendor/engine/index.js?v=8', import.meta.url).href,
       wasm: new URL('vendor/engine/core.wasm', import.meta.url).href,
       sync: new URL('vendor/engine/sync.js', import.meta.url).href,
     },
@@ -46,7 +46,7 @@ async function start() {
     flags: { rewriterLogs: false, syncxhr: false, interceptDownloads: false },
   });
   phase = 'S4';
-  const workerURL = new URL('worker.js?v=7', root).href;
+  const workerURL = new URL('worker.js?v=8', root).href;
   await navigator.serviceWorker.register(workerURL, { scope: root.pathname, updateViaCache: 'none' });
   await new Promise((resolve, reject) => {
     const check = () => {
@@ -90,7 +90,7 @@ export async function loadResource(input, init = {}) {
   } : init;
   const signal = options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(120000)]) : AbortSignal.timeout(120000);
   const response = await nativeFetch(controller.encodeUrl(url), { ...options, signal, referrer: '', referrerPolicy: 'no-referrer' });
-  if (response.status >= 500) throw new Error('Unable to load. Please retry.');
+  if (response.status >= 500) { console.error('Xyfer request', decodeURIComponent(response.headers.get('X-Xyfer-Fault') || 'Unavailable')); throw new Error('Unable to load. Please retry.'); }
   return response;
 }
 
