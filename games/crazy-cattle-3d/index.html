@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Crazy Cattle 3D</title>
+  <link rel="icon" href="../../assets/icons/crazy-cattle-3d.png">
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080407;color:#f6eef0;font:14px Arial,sans-serif}canvas{display:block;width:100%;height:100%;outline:none}#loading{position:fixed;inset:0;display:grid;place-content:center;justify-items:center;gap:18px;background:radial-gradient(ellipse at 50% 85%,#550b23,transparent 65%),#080407}#loading img{width:130px;height:130px;object-fit:cover;border-radius:28px;box-shadow:0 15px 50px #0008}h1{margin:0;font-size:28px;letter-spacing:-1px;font-weight:500}progress{width:min(70vw,300px);height:8px;accent-color:#ed365e}#progress-label,#network-status{color:#c5a5af;font-size:12px;margin:0}#network-status{position:fixed;bottom:12px;left:16px;z-index:5}#loading[hidden]{display:none}
+  </style>
+</head>
+<body>
+  <canvas id="canvas" tabindex="0" aria-label="Crazy Cattle 3D game"></canvas>
+  <div id="loading"><img src="../../assets/icons/crazy-cattle-3d.png" alt=""><h1>Crazy Cattle 3D</h1><progress id="progress" max="72086933" value="0"></progress><p id="progress-label" role="status">Preparing game…</p></div>
+  <p id="network-status" role="status">Preparing…</p>
+  <script src="CrazyCattle3D.js"></script>
+  <script type="module" src="launch.mjs"></script>
+</body>
+</html>

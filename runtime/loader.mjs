@@ -1,6 +1,6 @@
 import { BareMuxConnection } from './vendor/channel/index.mjs?v=10';
-import { assetBase, allowedTarget, packAddress, unpackAddress, hosts } from './settings.mjs?v=5';
-import GameTransport from './session.mjs?v=5';
+import { assetBase, cattleBase, allowedTarget, packAddress, unpackAddress, hosts } from './settings.mjs?v=11';
+import GameTransport from './session.mjs?v=11';
 import './storage.js?v=10';
 
 const nativeFetch = window.xyferBrowserFetch || window.fetch.bind(window);
@@ -46,7 +46,7 @@ async function start() {
     flags: { rewriterLogs: false, syncxhr: false, interceptDownloads: false },
   });
   phase = 'S4';
-  const workerURL = new URL('worker.js?v=10', root).href;
+  const workerURL = new URL('worker.js?v=11', root).href;
   await navigator.serviceWorker.register(workerURL, { scope: root.pathname, updateViaCache: 'none' });
   await new Promise((resolve, reject) => {
     const check = () => {
@@ -79,6 +79,9 @@ export async function loadResource(input, init = {}) {
   if (url.origin === location.origin && /^gd_web\.(data|wasm)(\.part\d+)?$/.test(url.pathname.split('/').pop())) {
     url = new URL(url.pathname.split('/').pop() + url.search, assetBase);
   }
+  if (url.origin === location.origin && /^CrazyCattle3D\.(wasm|pck)$/.test(url.pathname.split('/').pop())) {
+    url = new URL(url.pathname.split('/').pop() + url.search, cattleBase);
+  }
   const proxyMarker = url.pathname.indexOf('/__proxy');
   if (proxyMarker >= 0 && url.searchParams.has('url')) url = new URL(url.searchParams.get('url'));
   if (hosts.includes(url.hostname)) url.protocol = 'https:';
@@ -106,6 +109,9 @@ export function resourceAddress(value) {
   let url = new URL(value, location.href);
   if (url.origin === location.origin && /^gd_web\.(data|wasm)(\.part\d+)?$/.test(url.pathname.split('/').pop())) {
     url = new URL(url.pathname.split('/').pop() + url.search, assetBase);
+  }
+  if (url.origin === location.origin && /^CrazyCattle3D\.(wasm|pck)$/.test(url.pathname.split('/').pop())) {
+    url = new URL(url.pathname.split('/').pop() + url.search, cattleBase);
   }
   if (url.pathname.includes('/__proxy') && url.searchParams.has('url')) url = new URL(url.searchParams.get('url'));
   if (hosts.includes(url.hostname)) url.protocol = 'https:';

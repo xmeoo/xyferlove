@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { allowedTarget, assetBase, servers, packAddress, unpackAddress } from './settings.mjs';
+import { allowedTarget, assetBase, cattleBase, servers, packAddress, unpackAddress } from './settings.mjs';
 
 test('only the pinned assets and HTTPS game API can use the transport', () => {
   for (const url of [assetBase+'gd_web.data.part1',assetBase+'gd_web.js',assetBase+'ref/logo.png','https://www.boomlings.com/database/getGJLevels21.php']) assert.equal(allowedTarget(url),true,url);
@@ -17,3 +17,5 @@ test('every supplied relay is unique and uses secure WebSockets',()=>{
 test('address encoding preserves query strings and fragments',()=>{for(const value of [assetBase+'gd_web.js',assetBase+'gd_web.data.part1?x=a&b=2#test','https://www.boomlings.com/database/getGJLevels21.php']){const encoded=packAddress(value);assert.match(encoded,/^[A-Za-z0-9_-]+$/);assert.equal(unpackAddress(encoded),value);}});
 
 test('asset origin differs from the app origin to avoid the engine self-origin guard',()=>{for(const origin of ['https://cdn.jsdelivr.net','https://xmeoo.github.io','http://127.0.0.1:8765'])assert.notEqual(new URL(assetBase).origin,origin);assert.match(assetBase,/\/c6ac9417ff93ea957425b23ee87f1ed290663ebb\/$/);});
+
+test('Crazy Cattle downloads are limited to the pinned game repository',()=>{assert.equal(allowedTarget(cattleBase+'CrazyCattle3D.wasm'),true);assert.equal(allowedTarget(cattleBase+'CrazyCattle3D.pck'),true);assert.equal(allowedTarget(cattleBase.replace('bd686ee62e198459b7d978fe56d53d89cfbf62cd','main')+'CrazyCattle3D.wasm'),false);assert.equal(allowedTarget(cattleBase+'../../../../other/file'),false);});

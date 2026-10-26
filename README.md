@@ -17,3 +17,13 @@ Changes to the upstream loader: correct and pin asset URLs, remove analytics, an
 No private backend or secrets are included.
 
 Game assets have no direct-download fallback. Site files still load normally from GitHub Pages/jsDelivr.
+
+## Crazy Cattle 3D and artwork
+
+The library includes local Geometry Dash and Crazy Cattle 3D icons. Geometry Dash's cover comes from GN Math's `covers/868.png`; Crazy Cattle's sheep icon comes from its Godot export. Artwork remains credited to the original game creators.
+
+Crazy Cattle 3D is by Anna Mayberry / 4nn4t4t. This integration follows [GN Math entry 164](https://gn-math.dev/?id=164), which uses `164-fix3.html` from gn-math/html at 5639f84d67456355a3c807a0f52b41c346b3385d and the mobile-capable Godot export from genizy/cc3d-mobile at bd686ee62e198459b7d978fe56d53d89cfbf62cd. Startup JavaScript, audio worklets, and artwork are local; the pinned 28.6 MB pack and 43.4 MB WASM load through the existing transport only when the game is opened. GN Math's ads, analytics, broad document replacement, and separate service worker are not imported.
+
+The game is exported without threads, so it does not require a second worker or cross-origin-isolation installation. WASM responses receive the MIME type required by streaming compilation.
+
+One upstream audio-position worklet syntax typo (`event ? .data ? .type`) is corrected to valid optional chaining. Upstream Godot license notices are retained.
