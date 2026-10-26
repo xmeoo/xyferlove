@@ -5,149 +5,30 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#000000">
-<link rel="icon" href="https://cdn.jsdelivr.net/gh/AlexBoops/geometry-dash-webport@c6ac9417ff93ea957425b23ee87f1ed290663ebb/ref/logo.png">
+<link rel="icon" href="data:,">
 <title>Geometry Dash WASM</title>
 
 
 
-<!-- 1. BASE CONFIGURATION & CLOUDFLARE BOOMLINGS PROXY ENGINE -->
+<script type="module" src="../../proxy/network.mjs"></script>
 <script>
-  window.__CDN_BASE = "https://cdn.jsdelivr.net/gh/AlexBoops/geometry-dash-webport@c6ac9417ff93ea957425b23ee87f1ed290663ebb/";
-
-  // Disable Scramjet to avoid 404 errors on missing files
-  window.__gdScramjetOff = true;
-  window.__gdScramjetFetch = null;
-
-  // Clear broken/stale cached proxies from previous attempts
-  try {
-    var cached = localStorage.getItem("gdProxyBase");
-    if (cached && (cached.includes("corsfix") || cached.includes("freeboard") || cached.includes("test.cors") || cached.includes("allorigins"))) {
-      localStorage.removeItem("gdProxyBase");
-    }
-  } catch (e) {}
-
-  // Primary custom Cloudflare worker with CodeTabs fallback
-  window.__gdProxyBases = [
-    "https://boomlings.ivan-makarov12341.workers.dev/?url=",
-    "https://api.codetabs.com/v1/proxy/?quest="
-  ];
-
-  window.__gdProxyBase = window.__gdProxyBases[0];
-  window.__gdProxyPass = ["googletagmanager", "cloudflareinsights", "jsdelivr", "gstatic", "googleapis", "workers.dev", "codetabs"];
-
-  window.__gdProxyTarget = function(u) {
-    if (typeof u !== "string") return null;
-
-    for (var b = 0; b < window.__gdProxyBases.length; b++) {
-      if (u.indexOf(window.__gdProxyBases[b]) === 0) return null;
-    }
-
-    var k = "/__proxy?url=";
-    var i = u.indexOf(k);
-    if (i >= 0) {
-      var s = u.slice(i + k.length);
-      try { return decodeURIComponent(s); } catch (e) { return s; }
-    }
-
-    if (u.includes("boomlings.com")) {
-      return u;
-    }
-
-    if (/^https?:\/\//i.test(u)) {
-      try {
-        var w = new URL(u);
-        if (w.origin === location.origin) return null;
-        for (var p = 0; p < window.__gdProxyPass.length; p++) {
-          if (w.hostname.indexOf(window.__gdProxyPass[p]) >= 0) return null;
-        }
-        return u;
-      } catch (e) { return null; }
-    }
-    return null;
-  };
-
-  window.__gdProxyBuild = function(base, target) {
-    if (target.startsWith("http://www.boomlings.com")) {
-      target = target.replace("http://", "https://");
-    }
-    return base + target;
-  };
-
-  (function() {
-    var nativeFetch = window.fetch.bind(window);
-    function retryable(st) { return st === 401 || st === 403 || st === 404 || st === 429 || st === 500 || st === 503; }
-
-    function attempt(input, init, target, idx) {
-      var url = window.__gdProxyBuild(window.__gdProxyBases[idx], target);
-      var out = (typeof input === "string") ? url : ((typeof Request !== "undefined") ? new Request(url, input) : url);
-
-      return nativeFetch(out, init).then(function(res) {
-        if (retryable(res.status) && idx < window.__gdProxyBases.length - 1) {
-          return attempt(input, init, target, idx + 1);
-        }
-        window.__gdProxyBase = window.__gdProxyBases[idx];
-        return res;
-      }, function(err) {
-        if (idx < window.__gdProxyBases.length - 1) {
-          return attempt(input, init, target, idx + 1);
-        }
-        throw err;
-      });
-    }
-
-    window.fetch = function(input, init) {
-      var u = (typeof input === "string") ? input : (input && input.url);
-      if (!u) return nativeFetch(input, init);
-
-      // Reassemble and supply split virtual gd_web.data
-      if (/(^|\/)gd_web\.data([?#]|$)/.test(u)) {
-        return window.__loadMergedData().then(function(blob) {
-          return new Response(blob, {
-            status: 200,
-            headers: {
-              'Content-Type': 'application/octet-stream',
-              'Content-Length': String(blob.size)
-            }
-          });
-        });
-      }
-
-      var target = window.__gdProxyTarget(u);
-      if (target === null) return nativeFetch(input, init);
-
-      return attempt(input, init, target, 0);
-    };
-
-    var nativeOpen = XMLHttpRequest.prototype.open;
-    var nativeSend = XMLHttpRequest.prototype.send;
-
-    XMLHttpRequest.prototype.open = function(method, url) {
-      this._reqUrl = url;
-      if (typeof url === "string") {
-        var target = window.__gdProxyTarget(url);
-        if (target !== null) {
-          arguments[1] = window.__gdProxyBuild(window.__gdProxyBase || window.__gdProxyBases[0], target);
-        }
-      }
-      return nativeOpen.apply(this, arguments);
-    };
-
-    XMLHttpRequest.prototype.send = function(body) {
-      if (typeof this._reqUrl === "string" && /(^|\/)gd_web\.data([?#]|$)/.test(this._reqUrl)) {
-        window.__loadMergedData().then(async (blob) => {
-          const ab = await blob.arrayBuffer();
-          Object.defineProperty(this, 'status', { value: 200 });
-          Object.defineProperty(this, 'readyState', { value: 4 });
-          Object.defineProperty(this, 'response', { value: this.responseType === 'arraybuffer' ? ab : new TextDecoder().decode(ab) });
-          Object.defineProperty(this, 'responseText', { value: new TextDecoder().decode(ab) });
-          if (typeof this.onreadystatechange === 'function') this.onreadystatechange();
-          if (typeof this.onload === 'function') this.onload();
-        });
-        return;
-      }
-      return nativeSend.apply(this, arguments);
-    };
-  })();
+window.__CDN_BASE = 'https://cdn.jsdelivr.net/gh/AlexBoops/geometry-dash-webport@c6ac9417ff93ea957425b23ee87f1ed290663ebb/';
+window.__gdScramjetOff = false;
+const browserFetch = window.fetch.bind(window);
+window.xyferBrowserFetch = browserFetch;
+window.fetch = function(input, init) {
+  const value = typeof input === 'string' ? input : input.url;
+  if (value && /^(blob:|data:)/.test(value)) return browserFetch(input, init);
+  if (!window.xyferDownload) return Promise.reject(new Error('Download connection is starting. Try again.'));
+  return window.xyferDownload(input, init);
+};
+// Native XHR preserves Emscripten's responseType/events and goes through the
+// same Scramjet service-worker route. Runtime loads only after worker startup.
+const xhrOpen = XMLHttpRequest.prototype.open;
+XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+  if (!/^(blob:|data:)/.test(String(url))) url = window.xyferProxyUrl(String(url));
+  return xhrOpen.call(this, method, url, ...rest);
+};
 </script>
 
 <!-- 2. RESILIENT CHUNK DOWNLOADER & REASSEMBLER -->
@@ -253,14 +134,14 @@ document.addEventListener("click", function() {
 </script>
 
 <style>
-html{background:#000;}body{margin:0;height:100%;color:#ddd;font-family:monospace;overflow:hidden;}#bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;}#bg::before{content:"";position:absolute;top:-4%;left:0;width:200%;height:108%;background:url("https://cdn.jsdelivr.net/gh/AlexBoops/geometry-dash-webport@c6ac9417ff93ea957425b23ee87f1ed290663ebb/ref/fondo_gd.jpg") repeat-x;background-size:50% 100%;filter:blur(12px);animation:bgdrift 90s linear infinite;}@keyframes bgdrift{from{transform:translateX(0);}to{transform:translateX(-50%);}}@media (prefers-reduced-motion:reduce){#bg::before{animation:none;}}#app{display:flex;flex-direction:column;height:100vh;}#logoDock{flex:0 0 auto;display:flex;justify-content:center;padding:6px 0 2px;opacity:0;transition:opacity .45s linear;}#logoDock.in{opacity:1;}#logoDock img{max-height:64px;max-width:40vw;width:auto;height:auto;}#stage{flex:1 1 auto;min-height:0;display:flex;justify-content:center;align-items:center;transform:translateY(-170%);transition:transform .55s cubic-bezier(.2,.85,.25,1);}#stage.in{transform:translateY(0);}canvas{max-width:96vw;max-height:100%;width:auto;height:auto;background:#000;image-rendering:pixelated;outline:none;display:block;user-select:none;}#midbar{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 0 6px;font-size:12px;color:#aaa;opacity:0;transform:translateY(120%);transition:transform .55s cubic-bezier(.2,.85,.25,1),opacity .45s;}#midbar.in{opacity:1;transform:translateY(0);}#bars{display:flex;flex-direction:column;gap:5px;transition:transform .5s cubic-bezier(.2,.85,.25,1),opacity .45s;}#bars.fall{transform:translateY(30px);opacity:0;pointer-events:none;}.abrow{display:flex;align-items:center;gap:7px;}.ablabel{width:100px;text-align:right;color:#888;font-size:10px;letter-spacing:.5px;white-space:nowrap;}.abtrack{position:relative;width:220px;height:8px;background:#111;border:1px solid #333;border-radius:4px;overflow:hidden;}.abfill{width:0%;height:100%;background:#ccc;border-radius:3px;transition:width .15s;}.abpct{width:118px;text-align:left;color:#999;font-size:11px;white-space:nowrap;}#bootbars{display:none;align-items:center;gap:7px;}#bootbars.on{display:flex;animation:bootdrop .5s cubic-bezier(.2,.85,.25,1);}@keyframes bootdrop{from{transform:translateY(-16px);opacity:0;}to{transform:translateY(0);opacity:1;}}#bootbars.done{transform:translateY(36px);opacity:0;transition:transform .5s cubic-bezier(.2,.85,.25,1),opacity .45s;pointer-events:none;}#fps{display:flex;align-items:center;gap:5px;color:#999;will-change:transform;}#fps svg{display:block;flex:0 0 auto;}#console{flex:0 0 auto;height:18vh;min-height:90px;max-height:200px;margin:0 8px 8px;padding:6px 8px;overflow-y:auto;font-size:12px;line-height:1.35;color:#999;background:#0a0a0a;border:1px solid #2a2a2a;white-space:pre-wrap;word-break:break-word;user-select:text;cursor:text;transform:translateY(135%);transition:transform .55s cubic-bezier(.2,.85,.25,1);}#console.in{transform:translateY(0);}#start{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:space-between;background:transparent;transition:opacity .5s;}#start.hide{opacity:0;pointer-events:none;}#logoFly{margin-top:14vh;transition:transform .45s cubic-bezier(.2,.9,.25,1);}#logoFly img{max-height:200px;max-width:70vw;width:auto;height:auto;}#logoFly.up{transform:translateY(-13vh) scale(.32);}#loadFly{margin-bottom:30vh;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:transform 1.15s cubic-bezier(.45,0,.6,1),opacity 1.15s linear;}#loadFly img{max-height:150px;max-width:40vw;width:auto;height:auto;display:block;transition:transform .15s;}#loadFly img:hover{transform:scale(1.08);}#loadFly.down{transform:translateY(32vh) scale(.8);opacity:0;}#fsBtn,#clearBtn{font:12px/1 monospace;color:#ccc;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:4px;padding:4px 8px;cursor:pointer;transition:color .2s;}#fsBtn:hover,#clearBtn:hover{color:#fff;}#credit{color:#888;font-size:11px;white-space:nowrap;}#canvas:fullscreen{max-width:none;max-height:none;width:100%;height:100%;}#canvas:-webkit-full-screen{max-width:none;max-height:none;width:100%;height:100%;}#errOverlay{position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:50;max-width:min(92vw,720px);display:none;background:#1a0000;border:1px solid #a33;color:#ffd7d7;font-size:12px;padding:8px 12px;border-radius:6px;white-space:pre-wrap;}#errOverlay.on{display:block;}canvas{touch-action:none;}
+html{background:#000;}body{margin:0;height:100%;color:#ddd;font-family:monospace;overflow:hidden;}#bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;}#bg::before{content:"";position:absolute;top:-4%;left:0;width:200%;height:108%;background:radial-gradient(ellipse at 30% 50%,#54091d,transparent 65%),#080407;background-size:50% 100%;filter:blur(12px);animation:bgdrift 90s linear infinite;}@keyframes bgdrift{from{transform:translateX(0);}to{transform:translateX(-50%);}}@media (prefers-reduced-motion:reduce){#bg::before{animation:none;}}#app{display:flex;flex-direction:column;height:100vh;}#logoDock{flex:0 0 auto;display:flex;justify-content:center;padding:6px 0 2px;opacity:0;transition:opacity .45s linear;}#logoDock.in{opacity:1;}#logoDock img{max-height:64px;max-width:40vw;width:auto;height:auto;}#stage{flex:1 1 auto;min-height:0;display:flex;justify-content:center;align-items:center;transform:translateY(-170%);transition:transform .55s cubic-bezier(.2,.85,.25,1);}#stage.in{transform:translateY(0);}canvas{max-width:96vw;max-height:100%;width:auto;height:auto;background:#000;image-rendering:pixelated;outline:none;display:block;user-select:none;}#midbar{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 0 6px;font-size:12px;color:#aaa;opacity:0;transform:translateY(120%);transition:transform .55s cubic-bezier(.2,.85,.25,1),opacity .45s;}#midbar.in{opacity:1;transform:translateY(0);}#bars{display:flex;flex-direction:column;gap:5px;transition:transform .5s cubic-bezier(.2,.85,.25,1),opacity .45s;}#bars.fall{transform:translateY(30px);opacity:0;pointer-events:none;}.abrow{display:flex;align-items:center;gap:7px;}.ablabel{width:100px;text-align:right;color:#888;font-size:10px;letter-spacing:.5px;white-space:nowrap;}.abtrack{position:relative;width:220px;height:8px;background:#111;border:1px solid #333;border-radius:4px;overflow:hidden;}.abfill{width:0%;height:100%;background:#ccc;border-radius:3px;transition:width .15s;}.abpct{width:118px;text-align:left;color:#999;font-size:11px;white-space:nowrap;}#bootbars{display:none;align-items:center;gap:7px;}#bootbars.on{display:flex;animation:bootdrop .5s cubic-bezier(.2,.85,.25,1);}@keyframes bootdrop{from{transform:translateY(-16px);opacity:0;}to{transform:translateY(0);opacity:1;}}#bootbars.done{transform:translateY(36px);opacity:0;transition:transform .5s cubic-bezier(.2,.85,.25,1),opacity .45s;pointer-events:none;}#fps{display:flex;align-items:center;gap:5px;color:#999;will-change:transform;}#fps svg{display:block;flex:0 0 auto;}#console{flex:0 0 auto;height:18vh;min-height:90px;max-height:200px;margin:0 8px 8px;padding:6px 8px;overflow-y:auto;font-size:12px;line-height:1.35;color:#999;background:#0a0a0a;border:1px solid #2a2a2a;white-space:pre-wrap;word-break:break-word;user-select:text;cursor:text;transform:translateY(135%);transition:transform .55s cubic-bezier(.2,.85,.25,1);}#console.in{transform:translateY(0);}#start{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:space-between;background:transparent;transition:opacity .5s;}#start.hide{opacity:0;pointer-events:none;}#logoFly{margin-top:14vh;transition:transform .45s cubic-bezier(.2,.9,.25,1);}#logoFly img{max-height:200px;max-width:70vw;width:auto;height:auto;}#logoFly.up{transform:translateY(-13vh) scale(.32);}#loadFly{margin-bottom:30vh;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:transform 1.15s cubic-bezier(.45,0,.6,1),opacity 1.15s linear;}#loadFly img{max-height:150px;max-width:40vw;width:auto;height:auto;display:block;transition:transform .15s;}#loadFly img:hover{transform:scale(1.08);}#loadFly.down{transform:translateY(32vh) scale(.8);opacity:0;}#fsBtn,#clearBtn{font:12px/1 monospace;color:#ccc;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:4px;padding:4px 8px;cursor:pointer;transition:color .2s;}#fsBtn:hover,#clearBtn:hover{color:#fff;}#credit{color:#888;font-size:11px;white-space:nowrap;}#canvas:fullscreen{max-width:none;max-height:none;width:100%;height:100%;}#canvas:-webkit-full-screen{max-width:none;max-height:none;width:100%;height:100%;}#errOverlay{position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:50;max-width:min(92vw,720px);display:none;background:#1a0000;border:1px solid #a33;color:#ffd7d7;font-size:12px;padding:8px 12px;border-radius:6px;white-space:pre-wrap;}#errOverlay.on{display:block;}canvas{touch-action:none;}
 </style>
 </head>
 <body>
 <div id="errOverlay" role="alert"></div>
 <div id="bg"></div>
 <div id="app">
-  <div id="logoDock"><img src="https://cdn.jsdelivr.net/gh/AlexBoops/geometry-dash-webport@c6ac9417ff93ea957425b23ee87f1ed290663ebb/ref/logo.png" alt="logo" onerror="this.style.display='none'"></div>
+  <div id="logoDock"><span style="font:700 32px Arial;color:#fff">Geometry Dash</span></div>
   <div id="stage"><canvas id="canvas" width="1920" height="1080"></canvas></div>
   <div id="midbar">
     <div id="bars">
@@ -275,9 +156,10 @@ html{background:#000;}body{margin:0;height:100%;color:#ddd;font-family:monospace
   </div>
   <div id="console"></div>
 </div>
+<div id="network-status" role="status" style="position:fixed;bottom:12px;left:16px;z-index:60;max-width:80vw;color:#edb7c5;font:12px Arial">Downloads use a third-party relay.</div>
 <div id="start">
-  <div id="logoFly"><img src="https://cdn.jsdelivr.net/gh/AlexBoops/geometry-dash-webport@c6ac9417ff93ea957425b23ee87f1ed290663ebb/ref/logo.png" alt="logo" onerror="this.style.display='none'"></div>
-  <div id="loadFly"><img src="https://cdn.jsdelivr.net/gh/AlexBoops/geometry-dash-webport@c6ac9417ff93ea957425b23ee87f1ed290663ebb/ref/load.png" alt="load" onerror="this.parentElement.textContent='LOADING…';this.remove()"></div>
+  <div id="logoFly"><span style="font:700 32px Arial;color:#fff">Geometry Dash</span></div>
+  <div id="loadFly" role="button" tabindex="0" aria-label="Load Geometry Dash"><span style="display:block;padding:20px 36px;border:1px solid #e83a60;border-radius:12px;color:white;background:#280c17;font:18px Arial">Load game</span></div>
 </div>
 
 <script>
@@ -568,8 +450,8 @@ var Module = {
   canvas: document.getElementById('canvas'),
   gdInputQueue: [],
   gdCursorPos: [0, 0],
+  getPreloadedPackage: function () { return window.__xyferDataBuffer; },
   locateFile: function (p) {
-    if (p.endsWith('.data')) return p;
     return window.__CDN_BASE + p;
   },
   instantiateWasm: function (imports, success) {
@@ -639,7 +521,7 @@ var Module = {
 };
 
 var started = false;
-function gdStart() {
+async function gdStart() {
   if (started) return;
   started = true;
   window.__gdLoadStarted = true;
@@ -667,7 +549,7 @@ function gdStart() {
   }, 1700);
 
   function loadModule() {
-    window.nativeFetch(window.__CDN_BASE + 'gd_web.js')
+    return window.nativeFetch(window.__CDN_BASE + 'gd_web.js')
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.text();
@@ -679,12 +561,20 @@ function gdStart() {
       })
       .catch(function (e) {
         say('failed to load gd_web.js: ' + e);
-        forceAssetsDone();
+        throw e;
       });
   }
 
-  window.__loadMergedData();
-  loadModule();
+  try {
+    const data = await window.__loadMergedData();
+    window.__xyferDataBuffer = await data.arrayBuffer();
+    await loadModule();
+  } catch (error) {
+    const overlay = document.getElementById('errOverlay');
+    overlay.textContent = 'Game download failed: ' + error.message + '. Reload to retry.';
+    overlay.classList.add('on');
+    document.getElementById('network-status').textContent = 'Download failed. Reload to retry.';
+  }
 }
 
 document.getElementById('loadFly').addEventListener('click', gdStart);

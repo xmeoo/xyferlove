@@ -1,0 +1,29 @@
+[
+  {
+    "license": "MIT",
+    "tarball": "https://registry.npmjs.org/@mercuryworkshop/scramjet/-/scramjet-1.1.0.tgz",
+    "version": "1.1.0",
+    "source": {
+      "url": "git+https://github.com/MercuryWorkshop/scramjet.git",
+      "type": "git"
+    },
+    "integrity": "sha512-T/9GZqAQX42eYr/t6VGR2m9J4BtIuncRkANo8hBVTGskrr522yuhaADhSu+65DYlhUyQnLUjDikuNYzlgv0Ejw==",
+    "name": "@mercuryworkshop/scramjet"
+  },
+  {
+    "license": null,
+    "tarball": "https://registry.npmjs.org/@mercuryworkshop/bare-mux/-/bare-mux-2.1.9.tgz",
+    "version": "2.1.9",
+    "source": null,
+    "integrity": "sha512-fiOqWm3VP0Bl8T+0l+qnb7ab9zO+PpKVbtJvOnMsefUv6kWIaoDtqyr9hd/t4gA8oBwgtyZVqIwO2J9nKY9ylw==",
+    "name": "@mercuryworkshop/bare-mux"
+  },
+  {
+    "license": "AGPL-3.0-only",
+    "tarball": "https://registry.npmjs.org/@mercuryworkshop/epoxy-transport/-/epoxy-transport-2.1.28.tgz",
+    "version": "2.1.28",
+    "source": null,
+    "integrity": "sha512-lv/Kfdn37y8ZCXQaIT3Ebj4OSztBqeXdbR9rchbHQBKIw/fNSQJLGNBHV5ScXSzqt7NCwv8ZiZx7urRyk7Ua/Q==",
+    "name": "@mercuryworkshop/epoxy-transport"
+  }
+]
