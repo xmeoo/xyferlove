@@ -10,10 +10,10 @@
 
 
 
-<script type="module" src="../../proxy/network.mjs"></script>
+<script type="module" src="../../runtime/loader.mjs"></script>
 <script>
-window.__CDN_BASE = 'https://cdn.jsdelivr.net/gh/AlexBoops/geometry-dash-webport@c6ac9417ff93ea957425b23ee87f1ed290663ebb/';
-window.__gdScramjetOff = false;
+window.__CDN_BASE = null;
+
 const browserFetch = window.fetch.bind(window);
 window.xyferBrowserFetch = browserFetch;
 window.fetch = function(input, init) {
@@ -26,7 +26,7 @@ window.fetch = function(input, init) {
 // same Scramjet service-worker route. Runtime loads only after worker startup.
 const xhrOpen = XMLHttpRequest.prototype.open;
 XMLHttpRequest.prototype.open = function(method, url, ...rest) {
-  if (!/^(blob:|data:)/.test(String(url))) url = window.xyferProxyUrl(String(url));
+  if (!/^(blob:|data:)/.test(String(url))) url = window.xyferAddress(String(url));
   return xhrOpen.call(this, method, url, ...rest);
 };
 </script>
@@ -34,7 +34,7 @@ XMLHttpRequest.prototype.open = function(method, url, ...rest) {
 <!-- 2. RESILIENT CHUNK DOWNLOADER & REASSEMBLER -->
 <script>
 (function() {
-  const CDN = window.__CDN_BASE;
+  const CDN = () => globalThis.xyferSettings.assetBase;
   const WASM_PARTS = 4;
   const DATA_PARTS = 16;
 
@@ -67,7 +67,7 @@ XMLHttpRequest.prototype.open = function(method, url, ...rest) {
     let totalBytes = 0;
 
     for (let i = 1; i <= count; i++) {
-      const url = `${CDN}${prefix}.part${i}`;
+      const url = `${CDN()}${prefix}.part${i}`;
       const buf = await fetchChunkWithRetry(url);
       chunks.push(new Uint8Array(buf));
       totalBytes += buf.byteLength;
@@ -156,7 +156,7 @@ html{background:#000;}body{margin:0;height:100%;color:#ddd;font-family:monospace
   </div>
   <div id="console"></div>
 </div>
-<div id="network-status" role="status" style="position:fixed;bottom:12px;left:16px;z-index:60;max-width:80vw;color:#edb7c5;font:12px Arial">Downloads use a third-party relay.</div>
+<div id="network-status" role="status" style="position:fixed;bottom:12px;left:16px;z-index:60;max-width:80vw;color:#edb7c5;font:12px Arial">Ready to load.</div>
 <div id="start">
   <div id="logoFly"><span style="font:700 32px Arial;color:#fff">Geometry Dash</span></div>
   <div id="loadFly" role="button" tabindex="0" aria-label="Load Geometry Dash"><span style="display:block;padding:20px 36px;border:1px solid #e83a60;border-radius:12px;color:white;background:#280c17;font:18px Arial">Load game</span></div>
@@ -452,7 +452,7 @@ var Module = {
   gdCursorPos: [0, 0],
   getPreloadedPackage: function () { return window.__xyferDataBuffer; },
   locateFile: function (p) {
-    return window.__CDN_BASE + p;
+    return globalThis.xyferSettings.assetBase + p;
   },
   instantiateWasm: function (imports, success) {
     window.__loadMergedWasm().then(function (wasmU8) {
@@ -504,7 +504,7 @@ var Module = {
               try {
                 var ov = document.getElementById('errOverlay');
                 if (ov) {
-                  ov.textContent = 'The game crashed (' + e + '). Reload the page to keep playing. Open it with ?debug to see logs.';
+                  ov.textContent = 'Unable to continue. Please reload and try again.';
                   ov.classList.add('on');
                 }
               } catch (e2) {}
@@ -549,7 +549,7 @@ async function gdStart() {
   }, 1700);
 
   function loadModule() {
-    return window.nativeFetch(window.__CDN_BASE + 'gd_web.js')
+    return browserFetch('engine.js')
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.text();
@@ -571,9 +571,9 @@ async function gdStart() {
     await loadModule();
   } catch (error) {
     const overlay = document.getElementById('errOverlay');
-    overlay.textContent = 'Game download failed: ' + error.message + '. Reload to retry.';
+    overlay.textContent = 'Unable to load. Please reload and try again.';
     overlay.classList.add('on');
-    document.getElementById('network-status').textContent = 'Download failed. Reload to retry.';
+    document.getElementById('network-status').textContent = 'Unable to load. Please retry.';
   }
 }
 
@@ -796,7 +796,7 @@ document.addEventListener('keydown', function (e) {
   }
 
   window.addEventListener('error', function(e) {
-    if (e && e.message && /JSPI|WebAssembly|wasm|memory/i.test(String(e.message))) err('Runtime error: ' + e.message);
+    if (e && e.message && /JSPI|WebAssembly|wasm|memory/i.test(String(e.message))) err('Unable to continue. Please reload and try again.');
   });
 })();
 </script>

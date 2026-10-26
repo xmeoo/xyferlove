@@ -1,5 +1,28 @@
-import EpoxyTransport from './vendor/epoxy/index.mjs';
-import { servers, assetBase, allowedTarget } from './servers.mjs';
+import StreamClient from './vendor/stream/index.mjs';
+import { servers, assetBase, allowedTarget } from './settings.mjs';
+
+const NativeSocket = globalThis.WebSocket;
+const destinations = new Set(servers);
+const sockets = new Set();
+globalThis.WebSocket = class extends NativeSocket {
+  constructor(address, protocols) {
+    const tracked = destinations.has(String(address));
+    if (tracked && [...sockets].some(socket => socket.readyState < NativeSocket.CLOSING)) throw new Error('Connection already active');
+    super(address, protocols);
+    if (tracked) {
+      sockets.add(this);
+      this.addEventListener('close', () => sockets.delete(this), { once: true });
+    }
+  }
+};
+async function closeSockets() {
+  await Promise.all([...sockets].map(socket => new Promise(resolve => {
+    if (socket.readyState === NativeSocket.CLOSED) return resolve();
+    socket.addEventListener('close', resolve, { once: true });
+    socket.close();
+    setTimeout(resolve, 1000);
+  })));
+}
 
 // The bundled WASM initializer is cached only after compilation finishes.
 // Serialize the first initialization before creating competing relay clients.
@@ -41,13 +64,12 @@ export default class GameTransport {
   }
 
   async findRelay() {
-    // Test three at a time. An open WebSocket alone does not prove Wisp/TLS works.
-    for (let attempted = 0; attempted < servers.length; attempted += 3) {
-      const candidates = Array.from({ length: Math.min(3, servers.length - attempted) }, () => servers[this.cursor++ % servers.length]);
-      this.report('Connecting to a relay…');
+    // Check one connection at a time and reuse it for subsequent requests.
+    for (let attempted = 0; attempted < servers.length; attempted++) {
+      const endpoint = servers[this.cursor++ % servers.length];
+      this.report('Connecting…');
+      const transport = new StreamClient({ wisp: endpoint, wisp_v2: false });
       try {
-        const selected = await Promise.any(candidates.map(async endpoint => {
-          const transport = new EpoxyTransport({ wisp: endpoint, wisp_v2: false });
           await deadline((async () => {
             await initialize(transport);
             const probe = await transport.request(new URL(assetBase + 'ref/logo.png'), 'GET', null, {}, undefined);
@@ -55,14 +77,15 @@ export default class GameTransport {
             const bytes = new Uint8Array(await new Response(probe.body).arrayBuffer());
             if (bytes[0] !== 137 || bytes[1] !== 80 || bytes[2] !== 78 || bytes[3] !== 71) throw new Error('Invalid asset response');
           })(), 12000, 'Relay connection timed out');
-          return { transport, endpoint };
-        }));
+        const selected = { transport, endpoint };
         this.current = selected;
-        this.report('Relay connected', selected.endpoint);
+        this.report('Ready', selected.endpoint);
         return selected;
-      } catch { /* Try the next group, without falling back to direct downloads. */ }
+      } catch {
+        await closeSockets();
+      }
     }
-    this.report('No relay is available. Try again later.');
+    this.report('Unable to load. Please retry.');
     throw new Error('None of the configured Wisp relays could fetch the game assets');
   }
 
@@ -81,7 +104,8 @@ export default class GameTransport {
         return response;
       } catch (error) {
         if (this.current === selected) this.current = null;
-        this.report('Relay disconnected. Reconnecting…');
+        await closeSockets();
+        this.report('Reconnecting…');
         if (!repeatable || attempt === 2) throw error;
       }
     }

@@ -1,6 +1,7 @@
-import { BareMuxConnection } from './vendor/baremux/index.mjs';
-import { assetBase, allowedTarget } from './servers.mjs';
-import GameTransport from './transport.mjs';
+import { BareMuxConnection } from './vendor/channel/index.mjs?v=3';
+import { assetBase, allowedTarget, packAddress, unpackAddress, hosts } from './settings.mjs';
+import GameTransport from './session.mjs';
+import './storage.js';
 
 const nativeFetch = window.xyferBrowserFetch || window.fetch.bind(window);
 const root = new URL('../', import.meta.url);
@@ -16,31 +17,33 @@ function showStatus(message) {
 }
 
 async function start() {
+  await globalThis.xyferStorageReady;
   if (!navigator.serviceWorker || !window.SharedWorker) {
     throw new Error('This browser needs service-worker and SharedWorker support. Open Xyfer in Chrome or Edge over HTTPS.');
   }
-  showStatus('Starting download connection…');
-  const connection = new BareMuxConnection(new URL('vendor/baremux/worker.js', import.meta.url).href);
-  await connection.setRemoteTransport(new GameTransport(), 'Xyfer Epoxy/Wisp');
+  showStatus('Preparing…');
+  const connection = new BareMuxConnection(new URL('vendor/channel/worker.js?v=3', import.meta.url).href);
+  await connection.setRemoteTransport(new GameTransport(), 'Xyfer session');
   await new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.src = new URL('vendor/scramjet/scramjet.all.js', import.meta.url).href;
+    script.src = new URL('vendor/engine/index.js?v=3', import.meta.url).href;
     script.onload = resolve;
     script.onerror = () => reject(new Error('Could not load the download engine'));
     document.head.append(script);
   });
   const { ScramjetController } = $scramjetLoadController();
   controller = new ScramjetController({
-    prefix: new URL('proxy/route/', root).pathname,
+    prefix: new URL('runtime/data/', root).pathname,
     files: {
-      all: new URL('vendor/scramjet/scramjet.all.js', import.meta.url).href,
-      wasm: new URL('vendor/scramjet/scramjet.wasm.wasm', import.meta.url).href,
-      sync: new URL('vendor/scramjet/scramjet.sync.js', import.meta.url).href,
+      all: new URL('vendor/engine/index.js?v=3', import.meta.url).href,
+      wasm: new URL('vendor/engine/core.wasm', import.meta.url).href,
+      sync: new URL('vendor/engine/sync.js', import.meta.url).href,
     },
+    codec: { encode: packAddress, decode: unpackAddress },
     flags: { rewriterLogs: false, syncxhr: false, interceptDownloads: false },
   });
   await controller.init();
-  const registration = await navigator.serviceWorker.register(new URL('proxy-sw.js', root), { scope: root.pathname });
+  const registration = await navigator.serviceWorker.register(new URL('worker.js?v=3', root), { scope: root.pathname });
   await navigator.serviceWorker.ready;
   if (navigator.serviceWorker.controller?.scriptURL !== registration.active?.scriptURL) {
     await new Promise((resolve, reject) => {
@@ -51,8 +54,8 @@ async function start() {
   return controller;
 }
 
-export async function proxyFetch(input, init = {}) {
-  if (!startup) startup = start().catch(error => { startup = null; showStatus(error.message); throw error; });
+export async function loadResource(input, init = {}) {
+  if (!startup) startup = start().catch(error => { startup = null; showStatus('Unable to load. Please retry.'); throw error; });
   await startup;
   const original = typeof input === 'string' || input instanceof URL ? String(input) : input.url;
   let url = new URL(original, location.href);
@@ -62,7 +65,7 @@ export async function proxyFetch(input, init = {}) {
   }
   const proxyMarker = url.pathname.indexOf('/__proxy');
   if (proxyMarker >= 0 && url.searchParams.has('url')) url = new URL(url.searchParams.get('url'));
-  if (url.hostname === 'www.boomlings.com' || url.hostname === 'boomlings.com') url.protocol = 'https:';
+  if (hosts.includes(url.hostname)) url.protocol = 'https:';
   if (!allowedTarget(url.href)) throw new Error('Download destination is outside the game allowlist');
   const options = input instanceof Request ? {
     method: input.method, headers: input.headers,
@@ -71,23 +74,23 @@ export async function proxyFetch(input, init = {}) {
   } : init;
   const signal = options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(120000)]) : AbortSignal.timeout(120000);
   const response = await nativeFetch(controller.encodeUrl(url), { ...options, signal });
-  if (response.status >= 500) throw new Error('Relay request failed (' + response.status + ')');
+  if (response.status >= 500) throw new Error('Unable to load. Please retry.');
   return response;
 }
 
-export function proxyUrl(value) {
+export function resourceAddress(value) {
   let url = new URL(value, location.href);
   if (url.origin === location.origin && /^gd_web\.(data|wasm)(\.part\d+)?$/.test(url.pathname.split('/').pop())) {
     url = new URL(url.pathname.split('/').pop() + url.search, assetBase);
   }
   if (url.pathname.includes('/__proxy') && url.searchParams.has('url')) url = new URL(url.searchParams.get('url'));
-  if (url.hostname === 'www.boomlings.com' || url.hostname === 'boomlings.com') url.protocol = 'https:';
+  if (hosts.includes(url.hostname)) url.protocol = 'https:';
   if (!controller || !allowedTarget(url.href)) throw new Error('Game connection is not ready or destination is not allowed');
   return controller.encodeUrl(url);
 }
 
-window.__gdScramjetFetch = proxyFetch;
-window.__gdScramjetOff = false;
 // Loader scripts can call this immediately; transport starts only on a request.
-window.xyferDownload = proxyFetch;
-window.xyferProxyUrl = proxyUrl;
+window.xyferDownload = loadResource;
+window.xyferAddress = resourceAddress;
+
+if(window.parent!==window)window.parent.postMessage({type:'xyfer-ready'},location.origin);
