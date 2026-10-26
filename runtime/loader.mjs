@@ -46,7 +46,7 @@ async function start() {
     flags: { rewriterLogs: false, syncxhr: false, interceptDownloads: false },
   });
   phase = 'S4';
-  const workerURL = new URL('worker.js?v=8', root).href;
+  const workerURL = new URL('worker.js?v=9', root).href;
   await navigator.serviceWorker.register(workerURL, { scope: root.pathname, updateViaCache: 'none' });
   await new Promise((resolve, reject) => {
     const check = () => {
@@ -89,7 +89,16 @@ export async function loadResource(input, init = {}) {
     ...init,
   } : init;
   const signal = options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(120000)]) : AbortSignal.timeout(120000);
-  const response = await nativeFetch(controller.encodeUrl(url), { ...options, signal, referrer: '', referrerPolicy: 'no-referrer' });
+  let response;
+  try {
+    response = await nativeFetch(controller.encodeUrl(url), { ...options, signal, referrer: '', referrerPolicy: 'no-referrer' });
+    document.body.dataset.lastStatus = String(response.status);
+    console.warn('Xyfer response', response.status);
+  } catch (error) {
+    document.body.dataset.lastFault = error.name + ': ' + error.message;
+    console.error('Xyfer fetch', error);
+    throw error;
+  }
   if (response.status >= 500) { console.error('Xyfer request', decodeURIComponent(response.headers.get('X-Xyfer-Fault') || 'Unavailable')); throw new Error('Unable to load. Please retry.'); }
   return response;
 }
