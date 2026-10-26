@@ -7,6 +7,7 @@ const nativeFetch = window.xyferBrowserFetch || window.fetch.bind(window);
 const root = new URL('../', import.meta.url);
 let startup;
 let controller;
+let phase = 'S1';
 const events = new BroadcastChannel('xyfer-network');
 events.onmessage = ({ data }) => showStatus(data.message);
 // Upstream fetch is replaced below; keep this reference independent of it.
@@ -22,8 +23,10 @@ async function start() {
     throw new Error('This browser needs service-worker and SharedWorker support. Open Xyfer in Chrome or Edge over HTTPS.');
   }
   showStatus('Preparing…');
+  phase = 'S2';
   const connection = new BareMuxConnection(new URL('vendor/channel/worker.js?v=3', import.meta.url).href);
   await connection.setRemoteTransport(new GameTransport(), 'Xyfer session');
+  phase = 'S3';
   await new Promise((resolve, reject) => {
     const script = document.createElement('script');
     script.src = new URL('vendor/engine/index.js?v=3', import.meta.url).href;
@@ -43,6 +46,7 @@ async function start() {
     flags: { rewriterLogs: false, syncxhr: false, interceptDownloads: false },
   });
   await controller.init();
+  phase = 'S4';
   const registration = await navigator.serviceWorker.register(new URL('worker.js?v=3', root), { scope: root.pathname });
   await navigator.serviceWorker.ready;
   if (navigator.serviceWorker.controller?.scriptURL !== registration.active?.scriptURL) {
@@ -55,7 +59,12 @@ async function start() {
 }
 
 export async function loadResource(input, init = {}) {
-  if (!startup) startup = start().catch(error => { startup = null; showStatus('Unable to load. Please retry.'); throw error; });
+  if (!startup) startup = start().catch(error => {
+    console.error('Xyfer startup', phase, error);
+    startup = null;
+    showStatus('Unable to load. Please retry. (' + phase + ')');
+    throw error;
+  });
   await startup;
   const original = typeof input === 'string' || input instanceof URL ? String(input) : input.url;
   let url = new URL(original, location.href);
