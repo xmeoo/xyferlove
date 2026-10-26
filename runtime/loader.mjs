@@ -1,7 +1,7 @@
-import { BareMuxConnection } from './vendor/channel/index.mjs?v=3';
+import { BareMuxConnection } from './vendor/channel/index.mjs?v=10';
 import { assetBase, allowedTarget, packAddress, unpackAddress, hosts } from './settings.mjs?v=5';
 import GameTransport from './session.mjs?v=5';
-import './storage.js';
+import './storage.js?v=10';
 
 const nativeFetch = window.xyferBrowserFetch || window.fetch.bind(window);
 const root = new URL('../', import.meta.url);
@@ -18,7 +18,7 @@ function showStatus(message) {
 }
 
 async function start() {
-  await globalThis.xyferStorageReady;
+  await globalThis.xyferPrepareStorage(root.pathname);
   if (!navigator.serviceWorker || !window.SharedWorker) {
     throw new Error('This browser needs service-worker and SharedWorker support. Open Xyfer in Chrome or Edge over HTTPS.');
   }
@@ -29,7 +29,7 @@ async function start() {
   phase = 'S3';
   await new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.src = new URL('vendor/engine/index.js?v=8', import.meta.url).href;
+    script.src = new URL('vendor/engine/index.js?v=10', import.meta.url).href;
     script.onload = resolve;
     script.onerror = () => reject(new Error('Could not load the download engine'));
     document.head.append(script);
@@ -38,7 +38,7 @@ async function start() {
   controller = new ScramjetController({
     prefix: new URL('runtime/data/', root).pathname,
     files: {
-      all: new URL('vendor/engine/index.js?v=8', import.meta.url).href,
+      all: new URL('vendor/engine/index.js?v=10', import.meta.url).href,
       wasm: new URL('vendor/engine/core.wasm', import.meta.url).href,
       sync: new URL('vendor/engine/sync.js', import.meta.url).href,
     },
@@ -46,7 +46,7 @@ async function start() {
     flags: { rewriterLogs: false, syncxhr: false, interceptDownloads: false },
   });
   phase = 'S4';
-  const workerURL = new URL('worker.js?v=9', root).href;
+  const workerURL = new URL('worker.js?v=10', root).href;
   await navigator.serviceWorker.register(workerURL, { scope: root.pathname, updateViaCache: 'none' });
   await new Promise((resolve, reject) => {
     const check = () => {
@@ -93,7 +93,6 @@ export async function loadResource(input, init = {}) {
   try {
     response = await nativeFetch(controller.encodeUrl(url), { ...options, signal, referrer: '', referrerPolicy: 'no-referrer' });
     document.body.dataset.lastStatus = String(response.status);
-    console.warn('Xyfer response', response.status);
   } catch (error) {
     document.body.dataset.lastFault = error.name + ': ' + error.message;
     console.error('Xyfer fetch', error);
@@ -118,4 +117,6 @@ export function resourceAddress(value) {
 window.xyferDownload = loadResource;
 window.xyferAddress = resourceAddress;
 
+const launchButton = document.getElementById('loadFly');
+if (launchButton) launchButton.disabled = false;
 if(window.parent!==window)window.parent.postMessage({type:'xyfer-player-ready'},location.origin);

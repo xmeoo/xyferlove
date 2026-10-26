@@ -11,7 +11,7 @@
 
 
 
-<script type="module" src="../../runtime/loader.mjs?v=9"></script>
+<script type="module" src="../../runtime/loader.mjs?v=10"></script>
 <script>
 window.__CDN_BASE = null;
 
@@ -160,7 +160,7 @@ html{background:#000;}body{margin:0;height:100%;color:#ddd;font-family:monospace
 <div id="network-status" role="status" style="position:fixed;bottom:12px;left:16px;z-index:60;max-width:80vw;color:#edb7c5;font:12px Arial">Ready to load.</div>
 <div id="start">
   <div id="logoFly"><span style="font:700 32px Arial;color:#fff">Geometry Dash</span></div>
-  <div id="loadFly" role="button" tabindex="0" aria-label="Load Geometry Dash"><span style="display:block;padding:20px 36px;border:1px solid #e83a60;border-radius:12px;color:white;background:#280c17;font:18px Arial">Load game</span></div>
+  <button id="loadFly" type="button" disabled="disabled" aria-label="Load Geometry Dash" style="background:transparent;border:0;padding:0"><span style="display:block;padding:20px 36px;border:1px solid #e83a60;border-radius:12px;color:white;background:#280c17;font:18px Arial">Load game</span></button>
 </div>
 
 <script>
@@ -524,7 +524,7 @@ var Module = {
 
 var started = false;
 async function gdStart() {
-  if (started) return;
+  if (started || !window.xyferDownload) return;
   started = true;
   if(window.parent!==window)window.parent.postMessage({type:'xyfer-game-loading'},location.origin);
   window.__gdLoadStarted = true;

@@ -1,5 +1,6 @@
-globalThis.xyferStorageReady = new Promise((resolve, reject) => {
-  const request = indexedDB.open('$xyfer-runtime-v3', 1);
+globalThis.xyferPrepareStorage = scope => new Promise((resolve, reject) => {
+  globalThis.xyferStorageName = '$xyfer-state:' + scope;
+  const request = indexedDB.open(globalThis.xyferStorageName, 1);
   request.onupgradeneeded = () => {
     for (const name of ['config', 'cookies', 'redirectTrackers', 'referrerPolicies', 'publicSuffixList']) {
       if (!request.result.objectStoreNames.contains(name)) request.result.createObjectStore(name);

@@ -1,7 +1,18 @@
-importScripts('./runtime/settings.js?v=5', './runtime/storage.js', './runtime/vendor/engine/index.js?v=8');
+importScripts('./runtime/settings.js?v=5', './runtime/storage.js?v=10', './runtime/vendor/engine/index.js?v=10');
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
-const engineReady = xyferStorageReady.then(() => new ScramjetServiceWorker());
 const base = new URL('./', self.location.href);
+const engineReady = xyferPrepareStorage(base.pathname).then(() => new ScramjetServiceWorker());
+let configured;
+function configuredEngine() {
+  if (!configured) configured = engineReady.then(async engine => {
+    // A config message sets the instance property but does not initialize the
+    // engine's module globals. Force the documented storage initialization path.
+    engine.config = undefined;
+    await engine.loadConfig();
+    return engine;
+  }).catch(error => { configured = null; throw error; });
+  return configured;
+}
 const dataPath = base.pathname + 'runtime/data/';
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', event => event.waitUntil(self.clients.claim()));
@@ -16,8 +27,7 @@ async function handle(event) {
       const value = url.pathname.slice(dataPath.length).split('').reverse().join('').replaceAll('-', '+').replaceAll('_', '/');
       const target = atob(value + '='.repeat((4 - value.length % 4) % 4));
       if (!xyferSettings.allowedTarget(target)) return new Response('Unable to load.', { status: 403 });
-      const engine = await engineReady;
-      await engine.loadConfig();
+      const engine = await configuredEngine();
       // These are raw file/API requests from the app, not rewritten documents.
       // An ordinary app referrer cannot be decoded as an encoded target URL.
       const request = new Request(event.request, { referrer: '', referrerPolicy: 'no-referrer' });
