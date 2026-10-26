@@ -1,6 +1,6 @@
 import { BareMuxConnection } from './vendor/channel/index.mjs?v=3';
-import { assetBase, allowedTarget, packAddress, unpackAddress, hosts } from './settings.mjs';
-import GameTransport from './session.mjs';
+import { assetBase, allowedTarget, packAddress, unpackAddress, hosts } from './settings.mjs?v=5';
+import GameTransport from './session.mjs?v=5';
 import './storage.js';
 
 const nativeFetch = window.xyferBrowserFetch || window.fetch.bind(window);
@@ -24,7 +24,7 @@ async function start() {
   }
   showStatus('Preparing…');
   phase = 'S2';
-  const connection = new BareMuxConnection(new URL('vendor/channel/worker.js?v=3', import.meta.url).href);
+  const connection = new BareMuxConnection(new URL('vendor/channel/worker.js?v=5', import.meta.url).href);
   await connection.setRemoteTransport(new GameTransport(), 'Xyfer session');
   phase = 'S3';
   await new Promise((resolve, reject) => {
@@ -47,7 +47,7 @@ async function start() {
   });
   await controller.init();
   phase = 'S4';
-  const registration = await navigator.serviceWorker.register(new URL('worker.js?v=3', root), { scope: root.pathname });
+  const registration = await navigator.serviceWorker.register(new URL('worker.js?v=5', root), { scope: root.pathname });
   await navigator.serviceWorker.ready;
   if (navigator.serviceWorker.controller?.scriptURL !== registration.active?.scriptURL) {
     await new Promise((resolve, reject) => {

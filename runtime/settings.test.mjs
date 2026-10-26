@@ -4,7 +4,7 @@ import { allowedTarget, assetBase, servers, packAddress, unpackAddress } from '.
 
 test('only the pinned assets and HTTPS game API can use the transport', () => {
   for (const url of [assetBase+'gd_web.data.part1',assetBase+'gd_web.js',assetBase+'ref/logo.png','https://www.boomlings.com/database/getGJLevels21.php']) assert.equal(allowedTarget(url),true,url);
-  for (const url of ['https://example.com/','http://www.boomlings.com/','https://boomlings.com.evil.test/','https://evil.test/?url='+assetBase,assetBase+'../../../../other/repo/file','https://user:pass@www.boomlings.com/','https://www.boomlings.com:444/','file:///etc/passwd',assetBase.replace('@c6ac9417ff93ea957425b23ee87f1ed290663ebb','@main')+'gd_web.js']) assert.equal(allowedTarget(url),false,url);
+  for (const url of ['https://example.com/','http://www.boomlings.com/','https://boomlings.com.evil.test/','https://evil.test/?url='+assetBase,assetBase+'../../../../other/repo/file','https://user:pass@www.boomlings.com/','https://www.boomlings.com:444/','file:///etc/passwd',assetBase.replace('c6ac9417ff93ea957425b23ee87f1ed290663ebb','main')+'gd_web.js']) assert.equal(allowedTarget(url),false,url);
 });
 
 test('every supplied relay is unique and uses secure WebSockets',()=>{
@@ -15,3 +15,5 @@ test('every supplied relay is unique and uses secure WebSockets',()=>{
 });
 
 test('address encoding preserves query strings and fragments',()=>{for(const value of [assetBase+'gd_web.js',assetBase+'gd_web.data.part1?x=a&b=2#test','https://www.boomlings.com/database/getGJLevels21.php']){const encoded=packAddress(value);assert.match(encoded,/^[A-Za-z0-9_-]+$/);assert.equal(unpackAddress(encoded),value);}});
+
+test('asset origin differs from the app origin to avoid the engine self-origin guard',()=>{for(const origin of ['https://cdn.jsdelivr.net','https://xmeoo.github.io','http://127.0.0.1:8765'])assert.notEqual(new URL(assetBase).origin,origin);assert.match(assetBase,/\/c6ac9417ff93ea957425b23ee87f1ed290663ebb\/$/);});

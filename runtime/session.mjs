@@ -1,5 +1,5 @@
 import StreamClient from './vendor/stream/index.mjs';
-import { servers, assetBase, allowedTarget } from './settings.mjs';
+import { servers, assetBase, allowedTarget } from './settings.mjs?v=5';
 
 const NativeSocket = globalThis.WebSocket;
 const destinations = new Set(servers);
