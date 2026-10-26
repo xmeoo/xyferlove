@@ -27,3 +27,11 @@ Crazy Cattle 3D is by Anna Mayberry / 4nn4t4t. This integration follows [GN Math
 The game is exported without threads, so it does not require a second worker or cross-origin-isolation installation. WASM responses receive the MIME type required by streaming compilation.
 
 One upstream audio-position worklet syntax typo (`event ? .data ? .type`) is corrected to valid optional chaining. Upstream Godot license notices are retained.
+
+## Idle Breakout
+
+The Idle Breakout tile embeds Kodiqi's official itch.io HTML5 build at https://html-classic.itch.zone/html/9939239/index.html, linked from https://kodiqi.itch.io/idle-breakout. Its local cover icon comes from the author's itch.io page (image 1800224). The game is loaded only when opened. No compiled game files are redistributed or modified.
+
+The official GameMaker build already reads and writes progress to localStorage. Its fixed iframe origin and path are deliberately kept independent of Xyfer release paths, so using a new Xyfer version on the same top-level host preserves the browser storage location. The iframe has no sandbox or credentialless attribute that would prevent normal storage. Browser privacy settings can block third-party storage; clearing site data or using a private session can erase saves. Saves do not sync across browsers/devices or between different top-level hosts. Existing saves played directly on itch.io may be partitioned separately by the browser.
+
+Per user request this addition received static integration checks only; the game was not launched or play-tested.
