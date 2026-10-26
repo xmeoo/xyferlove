@@ -18,7 +18,10 @@ async function handle(event) {
       if (!xyferSettings.allowedTarget(target)) return new Response('Unable to load.', { status: 403 });
       const engine = await engineReady;
       await engine.loadConfig();
-      return await engine.fetch(event);
+      // These are raw file/API requests from the app, not rewritten documents.
+      // An ordinary app referrer cannot be decoded as an encoded target URL.
+      const request = new Request(event.request, { referrer: '', referrerPolicy: 'no-referrer' });
+      return await engine.fetch({ request, clientId: event.clientId });
     } catch { return new Response('Unable to load. Please retry.', { status: 502 }); }
   }
   if (event.request.mode === 'navigate') {

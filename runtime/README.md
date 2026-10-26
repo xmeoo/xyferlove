@@ -35,3 +35,5 @@ The browser receives an actual SVG on a first visit, so script can install the w
 ## CDN-origin regression
 
 Game assets use the pinned raw.githubusercontent.com repository path, rather than cdn.jsdelivr.net. The engine rejects requests whose target origin matches the application origin. Using jsDelivr for both the application and the requested game chunks triggered that protection before a relay was selected. The alternate asset origin preserves the protection and still sends downloads through the configured transport. The regression test checks both the CDN and Pages application origins.
+
+Raw file/API requests omit the application referrer before entering the rewriting engine. A normal, unencoded player URL cannot be decoded by the reversed-Base64 URL codec. This also prevents the application URL from being forwarded to upstream file/API hosts. Worker upgrades are awaited by exact controlling script URL before a download starts.

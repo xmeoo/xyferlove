@@ -46,7 +46,7 @@ async function start() {
     flags: { rewriterLogs: false, syncxhr: false, interceptDownloads: false },
   });
   phase = 'S4';
-  const workerURL = new URL('worker.js?v=6', root).href;
+  const workerURL = new URL('worker.js?v=7', root).href;
   await navigator.serviceWorker.register(workerURL, { scope: root.pathname, updateViaCache: 'none' });
   await new Promise((resolve, reject) => {
     const check = () => {
@@ -89,7 +89,7 @@ export async function loadResource(input, init = {}) {
     ...init,
   } : init;
   const signal = options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(120000)]) : AbortSignal.timeout(120000);
-  const response = await nativeFetch(controller.encodeUrl(url), { ...options, signal });
+  const response = await nativeFetch(controller.encodeUrl(url), { ...options, signal, referrer: '', referrerPolicy: 'no-referrer' });
   if (response.status >= 500) throw new Error('Unable to load. Please retry.');
   return response;
 }
