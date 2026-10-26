@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" role="img" aria-labelledby="title desc">
+  <title id="title">Xyfer</title>
+  <desc id="desc">A silver Xyfer wordmark suspended above slow flowing crimson light on black.</desc>
+  <defs>
+    <radialGradient id="red">
+      <stop stop-color="#ed123e" stop-opacity=".85"/>
+      <stop offset=".42" stop-color="#9c0926" stop-opacity=".65"/>
+      <stop offset="1" stop-color="#140207" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="silk" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ff4660" stop-opacity="0"/>
+      <stop offset=".48" stop-color="#dc1637" stop-opacity=".6"/>
+      <stop offset=".62" stop-color="#720b20" stop-opacity=".25"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="type" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#fff"/>
+      <stop offset="1" stop-color="#ad9ba1"/>
+    </linearGradient>
+    <radialGradient id="vignette">
+      <stop offset=".3" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".8"/>
+    </radialGradient>
+    <filter id="blur" x="-50%" y="-80%" width="200%" height="260%">
+      <feGaussianBlur stdDeviation="48"/>
+    </filter>
+    <style>
+      .glow{transform-origin:960px 740px;animation:breathe 19s ease-in-out infinite alternate}
+      .ribbon{transform-origin:960px 700px;animation:flow 24s ease-in-out infinite alternate}
+      .second{animation-delay:-12s;animation-duration:29s}
+      @keyframes breathe{from{transform:translate(-100px,70px) scale(1)}to{transform:translate(100px,-80px) scale(1.18)}}
+      @keyframes flow{from{transform:translate(-90px,50px) rotate(-7deg)}to{transform:translate(80px,-50px) rotate(7deg)}}
+      @media(prefers-reduced-motion:reduce){.glow,.ribbon{animation:none}}
+    </style>
+  </defs>
+  <path fill="#050305" d="M0 0h1920v1080H0z"/>
+  <g class="glow">
+    <ellipse cx="1260" cy="850" rx="1000" ry="620" fill="url(#red)"/>
+    <ellipse cx="190" cy="260" rx="700" ry="570" fill="url(#red)" opacity=".34"/>
+  </g>
+  <g filter="url(#blur)">
+    <path class="ribbon" d="M-360 1060C200 80 440 1250 1080 650S1740 40 2220 420L2220 680C1630 240 1520 1010 1000 940S200 420-360 1280Z" fill="url(#silk)"/>
+    <path class="ribbon second" d="M-270 670C400 1300 700 170 1260 620S1850 1330 2190 770L2190 1010C1680 1550 1450 780 1140 800S300 1520-270 830Z" fill="url(#silk)" opacity=".65"/>
+  </g>
+  <path fill="url(#vignette)" d="M0 0h1920v1080H0z"/>
+  <text x="960" y="565" text-anchor="middle" fill="url(#type)" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="154" font-weight="600" letter-spacing="-9">Xyfer</text>
+</svg>
