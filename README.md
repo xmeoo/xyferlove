@@ -4,7 +4,7 @@ Animated red and black landing page with a Games library.
 
 Settings can save a custom tab title, a generic tab icon, and one of five color themes in the browser's local storage.
 
-The Apps tab links to the official Discord, Spotify, YouTube, and Reddit web apps in separate browser tabs. The interface uses a locally hosted Manrope font under the SIL Open Font License 1.1.
+Home includes an embedded browser with an address bar and app shortcuts. The Apps tab opens Discord, Spotify, YouTube, and Reddit inside that browser. Browser pages use a separate service worker scope and the bundled Scramjet/Wisp transport. Availability depends on the configured relays and each app's compatibility with the rewriting engine. The interface uses a locally hosted Manrope font under the SIL Open Font License 1.1.
 
 - Website: https://xmeoo.github.io/xyferlove/
 - Games: https://xmeoo.github.io/xyferlove/#games
