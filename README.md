@@ -4,6 +4,8 @@ Animated red and black landing page with a Games library.
 
 Settings can save a custom tab title, a generic tab icon, and one of five color themes in the browser's local storage.
 
+The Apps tab links to the official Discord, Spotify, YouTube, and Reddit web apps in separate browser tabs. The interface uses a locally hosted Manrope font under the SIL Open Font License 1.1.
+
 - Website: https://xmeoo.github.io/xyferlove/
 - Games: https://xmeoo.github.io/xyferlove/#games
 - SVG landing: https://cdn.jsdelivr.net/gh/xmeoo/xyferlove@main/index.svg

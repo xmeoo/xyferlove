@@ -25,6 +25,7 @@
       <feGaussianBlur stdDeviation="28"/>
     </filter>
     <style>
+      @font-face{font-family:Manrope;src:url('assets/fonts/manrope-semibold.woff2') format('woff2');font-weight:600}
       .glow{transform-origin:960px 540px;animation:breathe 9s ease-in-out infinite alternate}
       .ribbon{transform-origin:960px 540px;animation:flow 11s ease-in-out infinite alternate}
       .second{animation-delay:-7s;animation-duration:14s;animation-direction:alternate-reverse}
@@ -54,8 +55,8 @@
     <path class="ribbon second" d="M-270 670C400 1300 700 170 1260 620S1850 1330 2190 770L2190 1010C1680 1550 1450 780 1140 800S300 1520-270 830Z" fill="url(#silk)" opacity=".65"/>
   </g>
   <path fill="url(#vignette)" d="M0 0h1920v1080H0z"/>
-  <text x="960" y="565" text-anchor="middle" fill="url(#type)" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="154" font-weight="600" letter-spacing="-9">Xyfer</text>
-<a href="./index.html#games" target="_top" aria-label="Open Games"><rect x="1710" y="42" width="145" height="52" rx="26" fill="#140b10" stroke="#ffffff" stroke-opacity=".22"/><text x="1782" y="75" fill="#f6eef0" text-anchor="middle" font-family="Arial, sans-serif" font-size="20">Games ↗</text></a>
+  <text x="960" y="565" text-anchor="middle" fill="url(#type)" font-family="Manrope, sans-serif" font-size="154" font-weight="600" letter-spacing="-9">Xyfer</text>
+<a href="./index.html#games" target="_top" aria-label="Open Games"><rect x="1710" y="42" width="145" height="52" rx="26" fill="#140b10" stroke="#ffffff" stroke-opacity=".22"/><text x="1782" y="75" fill="#f6eef0" text-anchor="middle" font-family="Manrope, sans-serif" font-size="20">Games ↗</text></a>
 <script><![CDATA[
 (async () => {
   const expected = new URL('./worker.js', location.href);
@@ -64,7 +65,7 @@
   try {
     if (!navigator.serviceWorker) throw new Error('Unavailable');
     const task = (async () => {
-      const registration = await navigator.serviceWorker.register('./worker.js?v=16', { scope: './', updateViaCache: 'none' });
+      const registration = await navigator.serviceWorker.register('./worker.js?v=17', { scope: './', updateViaCache: 'none' });
       const worker = registration.installing || registration.waiting || registration.active;
       if (!worker) throw new Error('Unavailable');
       if (worker.state !== 'activated') await new Promise((resolve, reject) => {
