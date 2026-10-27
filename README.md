@@ -2,6 +2,8 @@
 
 Animated red and black landing page with a Games library.
 
+Settings can save a custom tab title, a generic tab icon, and one of five color themes in the browser's local storage.
+
 - Website: https://xmeoo.github.io/xyferlove/
 - Games: https://xmeoo.github.io/xyferlove/#games
 - SVG landing: https://cdn.jsdelivr.net/gh/xmeoo/xyferlove@main/index.svg
@@ -39,3 +41,7 @@ The pinned build's save-key function is set to the stable xyfer.idle-breakout.v1
 ## Slope
 
 Slope is integrated from the clean Unity WebGL build at https://github.com/mcalec-dev/slope-game, pinned to commit `960491c36a2aa35f3572907353f232cdba3161bb`. The repository identifies the game as Slope Game by IDnet. Its small Unity loader is hosted locally; the approximately 14 MB Unity data, framework, memory and WASM files download through the existing transport only when Slope is opened. The game icon is GN Math's `covers/198.png`. The integration adds no advertisements or analytics.
+
+## 2048 and Hextris
+
+2048 is imported from https://github.com/gabrielecirulli/2048 at commit `478b6ec346e3787f589e4af751378d06ded4cbbc` under its MIT license. Hextris is imported from https://github.com/Hextris/hextris at commit `3f4847dc8fd7dab3d1c87e6324b9159d92fbd396` under GPL-3.0. Both games and their icons are hosted locally. Hextris's legacy advertisements, analytics, store badges, and social-share controls are removed.

@@ -1,5 +1,5 @@
-import { loadResource } from '../../runtime/loader.mjs?v=13';
-import { slopeBase } from '../../runtime/settings.mjs?v=13';
+import { loadResource } from '../../runtime/loader.mjs?v=14';
+import { slopeBase } from '../../runtime/settings.mjs?v=14';
 
 const loading = document.querySelector('#loading');
 const progress = document.querySelector('#progress');
