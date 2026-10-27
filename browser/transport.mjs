@@ -1,4 +1,4 @@
-import RelayTransport from '../proxy/transport.mjs';
+import RelayTransport from '../runtime/session.mjs?v=18';
 
 // The browser has its own transport so the game's destination allowlist stays intact.
 // RelayTransport tests candidates in parallel instead of waiting through every
