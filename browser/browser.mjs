@@ -1,6 +1,6 @@
 import { BareMuxConnection } from '../runtime/vendor/channel/index.mjs?v=10';
 import '../runtime/storage.js?v=10';
-import BrowserTransport from './transport.mjs';
+import BrowserTransport from './transport.mjs?v=15';
 
 const page = document.querySelector('#page');
 const start = document.querySelector('#start');
