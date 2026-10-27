@@ -4,3 +4,17 @@
  const allowedTarget=value=>{try{const url=new URL(value);return url.protocol==='https:'&&!url.username&&!url.password&&!url.port&&(url.href.startsWith(data.assetBase)||url.href.startsWith(data.cattleBase)||url.href.startsWith(data.idleBase)||url.href.startsWith(data.slopeBase)||data.hosts.includes(url.hostname));}catch{return false;}};
  globalThis.xyferSettings={...data,allowedTarget};
 })();
+
+// Fears to Fathom: Home Alone is pinned to this upstream web-port commit.
+(() => {
+  const previous = globalThis.xyferSettings.allowedTarget;
+  const prefix = 'https://raw.githubusercontent.com/genizy/web-port/a8bea5fd11f88e5a9192857f434e299c40efe7e6/fears-to-fathom/home-alone/Build/';
+  const files = /^(?:UnityLoader\.js|FTFHAPort\.(?:wasm\.code|wasm\.framework)\.unityweb|FTFHAPort\.data\.unityweb\.part(?:[1-9]|[12]\d|3\d))$/;
+  globalThis.xyferSettings.allowedTarget = value => {
+    if (previous(value)) return true;
+    try {
+      const url = new URL(value);
+      return url.href.startsWith(prefix) && files.test(url.href.slice(prefix.length)) && !url.search && !url.hash;
+    } catch { return false; }
+  };
+})();

@@ -1,4 +1,4 @@
-importScripts('./runtime/settings.js?v=17', './runtime/storage.js?v=10', './runtime/vendor/engine/index.js?v=10');
+importScripts('./runtime/settings.js?v=18', './runtime/storage.js?v=10', './runtime/vendor/engine/index.js?v=10');
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const base = new URL('./', self.location.href);
 const engineReady = xyferPrepareStorage(base.pathname).then(() => new ScramjetServiceWorker());

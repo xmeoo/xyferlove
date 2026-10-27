@@ -23,3 +23,10 @@ test('Crazy Cattle downloads are limited to the pinned game repository',()=>{ass
 test('Idle Breakout downloads are restricted to the pinned standalone build',()=>{for(const file of ['html5game/Coding_BreakOut1.js','assets/Coding_BreakOut1_texture_0.png','assets/audio/sound_0.ogg'])assert.equal(allowedTarget(idleBase+file),true);assert.equal(allowedTarget(idleBase.replace('38210ab1e9cf2ec914c6ab11074ab81a1cb606f3','main')+'game.html'),false);assert.equal(allowedTarget(idleBase+'../../../../other/file'),false);});
 
 test('Slope downloads are restricted to the pinned Unity build',()=>{for(const file of ['data/slope_data.unityweb','data/slope_wasmcode.unityweb','data/slope_wasmframework.unityweb'])assert.equal(allowedTarget(slopeBase+file),true);assert.equal(allowedTarget(slopeBase.replace('960491c36a2aa35f3572907353f232cdba3161bb','main')+'data/slope.json'),false);assert.equal(allowedTarget(slopeBase+'../../../../other/file'),false);});
+
+test('Home Alone downloads are limited to the pinned build files', () => {
+  const base = 'https://raw.githubusercontent.com/genizy/web-port/a8bea5fd11f88e5a9192857f434e299c40efe7e6/fears-to-fathom/home-alone/Build/';
+  for (const file of ['UnityLoader.js', 'FTFHAPort.data.unityweb.part1', 'FTFHAPort.data.unityweb.part39', 'FTFHAPort.wasm.code.unityweb', 'FTFHAPort.wasm.framework.unityweb']) assert.equal(allowedTarget(base + file), true, file);
+  for (const file of ['FTFHAPort.data.unityweb.part40', '../index.html', 'FTFHAPort.data.unityweb.part1?other=1']) assert.equal(allowedTarget(base + file), false, file);
+  assert.equal(allowedTarget(base.replace('a8bea5fd11f88e5a9192857f434e299c40efe7e6', 'main') + 'UnityLoader.js'), false);
+});

@@ -53,3 +53,7 @@ Slope is integrated from the clean Unity WebGL build at https://github.com/mcale
 The mislabeled Block Blast build from SomeRandomFella/portsandrips was replaced with the actual 8×8 block puzzle implementation from SubPomel0/Block-Blast at commit `a0d6b6647855a0e917c8f6b5b133b0ed23da44eb`. FNAE uses web-ports/fnae at commit `ce3e15db144629f468916e186bc11547098706a2`. FNAF 1–4 use irv77/hd_fnaf at commit `8ddade73bcf0c30f4535d48af778d238f8ffd5a6`.
 
 Block Blast is hosted locally. The large FNAE and FNAF assets remain pinned at their upstream repositories and load only when opened. Approximate downloads are 156 MB for FNAE, 167 MB for FNAF 1, 182 MB for FNAF 2, 191 MB for FNAF 3, and 357 MB for FNAF 4.
+
+## Fears to Fathom: Home Alone
+
+The Games library includes the web port from [genizy/web-port](https://github.com/genizy/web-port/tree/a8bea5fd11f88e5a9192857f434e299c40efe7e6/fears-to-fathom/home-alone), pinned to commit `a8bea5fd11f88e5a9192857f434e299c40efe7e6`. Fears to Fathom is by Rayll; the port identifies slqntdevss as its author. The Unity loader, 39 split data files, and WASM files download from that commit through the existing game transport only after Play is pressed. The data files total about 806 MB, so a desktop browser with ample memory is recommended. The checkout contains a local launcher and original library icon; it does not redistribute the upstream game files.

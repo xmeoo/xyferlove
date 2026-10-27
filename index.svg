@@ -65,7 +65,7 @@
   try {
     if (!navigator.serviceWorker) throw new Error('Unavailable');
     const task = (async () => {
-      const registration = await navigator.serviceWorker.register('./worker.js?v=17', { scope: './', updateViaCache: 'none' });
+      const registration = await navigator.serviceWorker.register('./worker.js?v=18', { scope: './', updateViaCache: 'none' });
       const worker = registration.installing || registration.waiting || registration.active;
       if (!worker) throw new Error('Unavailable');
       if (worker.state !== 'activated') await new Promise((resolve, reject) => {
