@@ -1,4 +1,4 @@
-import { loadResource } from '../../runtime/loader.mjs?v=11';
+import { loadResource } from '../../runtime/loader.mjs?v=12';
 
 const nativeFetch = window.fetch.bind(window);
 const progress = document.getElementById('progress');
