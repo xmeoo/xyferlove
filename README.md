@@ -48,6 +48,6 @@ Slope is integrated from the clean Unity WebGL build at https://github.com/mcale
 
 ## Block Blast, FNAE, and FNAF 1–4
 
-Block Blast uses SomeRandomFella/portsandrips at commit `67547cbcdb21614540b26405e30cb54085890480`; its launcher is corrected to include all six chunks listed by the upstream manifest. FNAE uses web-ports/fnae at commit `ce3e15db144629f468916e186bc11547098706a2`. FNAF 1–4 use irv77/hd_fnaf at commit `8ddade73bcf0c30f4535d48af778d238f8ffd5a6`.
+The mislabeled Block Blast build from SomeRandomFella/portsandrips was replaced with the actual 8×8 block puzzle implementation from SubPomel0/Block-Blast at commit `a0d6b6647855a0e917c8f6b5b133b0ed23da44eb`. FNAE uses web-ports/fnae at commit `ce3e15db144629f468916e186bc11547098706a2`. FNAF 1–4 use irv77/hd_fnaf at commit `8ddade73bcf0c30f4535d48af778d238f8ffd5a6`.
 
-These large builds remain pinned at their upstream repositories and load only when opened. Approximate downloads are 118 MB for Block Blast, 156 MB for FNAE, 167 MB for FNAF 1, 182 MB for FNAF 2, 191 MB for FNAF 3, and 357 MB for FNAF 4.
+Block Blast is hosted locally. The large FNAE and FNAF assets remain pinned at their upstream repositories and load only when opened. Approximate downloads are 156 MB for FNAE, 167 MB for FNAF 1, 182 MB for FNAF 2, 191 MB for FNAF 3, and 357 MB for FNAF 4.
