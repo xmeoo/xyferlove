@@ -8,6 +8,7 @@ Home includes an embedded browser with an address bar and app shortcuts. The App
 
 - Website: https://xmeoo.github.io/xyferlove/
 - Games: https://xmeoo.github.io/xyferlove/#games
+- Chat: https://xmeoo.github.io/xyferlove/#chat
 - SVG landing: https://cdn.jsdelivr.net/gh/xmeoo/xyferlove@main/index.svg
 
 The SVG installs a same-directory worker, verifies readiness, then reloads. The worker serves the HTML app at the SVG URL with the correct HTML content type. Games stays on the jsDelivr address. GitHub Pages is available as an alternative.
@@ -19,6 +20,12 @@ The SVG installs a same-directory worker, verifies readiness, then reloads. The 
 Changes to the upstream loader: correct and pin asset URLs, remove analytics, and remove root service-worker registration for compatibility with project Pages hosting. The old CodeTabs/Cloudflare HTTP proxy routes are replaced with the Wisp transport, including HTTPS Boomlings API requests. See [runtime/README.md](runtime/README.md) for transport behavior, pinned dependency sources, and limitations. Initial game downloads total approximately 367 MB; desktop browsers are recommended.
 
 No private backend or secrets are included.
+
+## Public chat
+
+The Chat tab is an anonymous, live peer-to-peer room built with [Trystero](https://github.com/dmotz/trystero) 0.26.0 and its public Nostr signaling strategy. Messages travel directly between connected browsers and are not stored on a Xyfer server. The interface includes saved local display names, online presence, 400-character messages, incoming rate limits, and session-only blocking.
+
+The room has no permanent history, accounts, or server moderation. Everyone leaves the room when their tab closes, and network policies that block WebRTC or public Nostr relays can prevent a connection. A single WebRTC room is intended for a modest number of simultaneous visitors.
 
 Game assets have no direct-download fallback. Site files still load normally from GitHub Pages/jsDelivr.
 
