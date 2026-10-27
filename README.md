@@ -35,3 +35,7 @@ Idle Breakout is by Kodiqi. The replacement standalone GameMaker build comes fro
 The local launcher downloads the game script, textures and audio through the existing download transport only when opened. The exact file manifest is in games/idle-breakout/files.json. Image, media and XHR requests use downloaded blob resources; MP3 requests map to the build's Ogg audio. The game script is downloaded rather than redistributed in this checkout. No external embed or third-party storage permission is required.
 
 The pinned build's save-key function is set to the stable xyfer.idle-breakout.v1. namespace in first-party localStorage, independent of release paths. Its own save serializer runs every ten seconds and on page hiding/exit in addition to native autosave. Startup checks that storage can be read and written. Saves persist across Xyfer release tags on the same host/browser; clearing site data, private browsing, or changing host/browser affects saves. Earlier itch.io saves are not automatically migrated.
+
+## Slope
+
+Slope is integrated from the clean Unity WebGL build at https://github.com/mcalec-dev/slope-game, pinned to commit `960491c36a2aa35f3572907353f232cdba3161bb`. The repository identifies the game as Slope Game by IDnet. Its small Unity loader is hosted locally; the approximately 14 MB Unity data, framework, memory and WASM files download through the existing transport only when Slope is opened. The game icon is GN Math's `covers/198.png`. The integration adds no advertisements or analytics.

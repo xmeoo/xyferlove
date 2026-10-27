@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { allowedTarget, assetBase, cattleBase, idleBase, servers, packAddress, unpackAddress } from './settings.mjs';
+import { allowedTarget, assetBase, cattleBase, idleBase, slopeBase, servers, packAddress, unpackAddress } from './settings.mjs';
 
 test('only the pinned assets and HTTPS game API can use the transport', () => {
   for (const url of [assetBase+'gd_web.data.part1',assetBase+'gd_web.js',assetBase+'ref/logo.png','https://www.boomlings.com/database/getGJLevels21.php']) assert.equal(allowedTarget(url),true,url);
@@ -21,3 +21,5 @@ test('asset origin differs from the app origin to avoid the engine self-origin g
 test('Crazy Cattle downloads are limited to the pinned game repository',()=>{assert.equal(allowedTarget(cattleBase+'CrazyCattle3D.wasm'),true);assert.equal(allowedTarget(cattleBase+'CrazyCattle3D.pck'),true);assert.equal(allowedTarget(cattleBase.replace('bd686ee62e198459b7d978fe56d53d89cfbf62cd','main')+'CrazyCattle3D.wasm'),false);assert.equal(allowedTarget(cattleBase+'../../../../other/file'),false);});
 
 test('Idle Breakout downloads are restricted to the pinned standalone build',()=>{for(const file of ['html5game/Coding_BreakOut1.js','assets/Coding_BreakOut1_texture_0.png','assets/audio/sound_0.ogg'])assert.equal(allowedTarget(idleBase+file),true);assert.equal(allowedTarget(idleBase.replace('38210ab1e9cf2ec914c6ab11074ab81a1cb606f3','main')+'game.html'),false);assert.equal(allowedTarget(idleBase+'../../../../other/file'),false);});
+
+test('Slope downloads are restricted to the pinned Unity build',()=>{for(const file of ['data/slope_data.unityweb','data/slope_wasmcode.unityweb','data/slope_wasmframework.unityweb'])assert.equal(allowedTarget(slopeBase+file),true);assert.equal(allowedTarget(slopeBase.replace('960491c36a2aa35f3572907353f232cdba3161bb','main')+'data/slope.json'),false);assert.equal(allowedTarget(slopeBase+'../../../../other/file'),false);});
