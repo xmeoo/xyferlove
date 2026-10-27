@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Loading game…</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050305;color:#f7eff2;font-family:system-ui,"Segoe UI",sans-serif}.loader{position:fixed;inset:0;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 30%,#3b1320,#090608 62%)}.card{width:min(440px,90vw);text-align:center}.icon{width:94px;height:94px;object-fit:cover;border-radius:22px;box-shadow:0 18px 45px #0009;margin-bottom:20px}.title{font-size:22px;font-weight:700;margin-bottom:8px}.status{font-size:13px;color:#c5adb5;margin-bottom:18px}.track{height:8px;border-radius:20px;background:#ffffff12;overflow:hidden}.bar{height:100%;width:0;background:#ff4769;transition:width .18s}.retry{display:none;margin:18px auto 0;border:1px solid #ffffff22;border-radius:9px;background:#ff4769;color:white;padding:10px 16px;font:inherit;cursor:pointer}iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#050305}
+</style>
+</head>
+<body>
+<div class="loader" id="loader"><div class="card"><img class="icon" id="icon" alt=""><div class="title" id="title">Loading game…</div><div class="status" id="status">Preparing download…</div><div class="track"><div class="bar" id="bar"></div></div><button class="retry" id="retry">Retry</button></div></div>
+<iframe id="game" title="Game" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen hidden></iframe>
+<script type="module" src="launcher.mjs?v=18"></script>
+</body>
+</html>
