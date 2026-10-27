@@ -86,6 +86,10 @@ back.onclick = () => { if (position > 0) show(history[--position], false); };
 forward.onclick = () => { if (position < history.length - 1) show(history[++position], false); };
 document.querySelector('#reload').onclick = () => { if (position >= 0) show(history[position], false); };
 window.addEventListener('message', event => {
-  if (event.origin === location.origin && event.source === parent && event.data?.type === 'xyfer-open-url') show(event.data.url);
+  if (event.origin === location.origin && event.source === parent && event.data?.type === 'xyfer-open-url') {
+    parent.postMessage({ type: 'xyfer-browser-opened' }, location.origin);
+    show(event.data.url);
+  }
 });
+parent.postMessage({ type: 'xyfer-browser-ready' }, location.origin);
 controls();
