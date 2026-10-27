@@ -64,3 +64,9 @@ Block Blast is hosted locally. The large FNAE and FNAF assets remain pinned at t
 ## Fears to Fathom: Home Alone
 
 The Games library includes the web port from [genizy/web-port](https://github.com/genizy/web-port/tree/a8bea5fd11f88e5a9192857f434e299c40efe7e6/fears-to-fathom/home-alone), pinned to commit `a8bea5fd11f88e5a9192857f434e299c40efe7e6`. Fears to Fathom is by Rayll; the port identifies slqntdevss as its author. The Unity loader, 39 split data files, and WASM files download from that commit through the existing game transport only after Play is pressed. The data files total about 806 MB, so a desktop browser with ample memory is recommended. The checkout contains a local launcher and original library icon; it does not redistribute the upstream game files.
+
+## Extended web port catalog
+
+The Games library also links 36 playable builds found through [Carter54git's Ultimate Catalog of Web Game Ports](https://github.com/Carter54git/Ultimate-Catalog-Of-Web-Game-Ports/tree/fb8a292b212a3795ac05634b72c0eb7e17c1b4e6). This batch includes Slime Rancher, 20 Minutes Till Dawn, Bad Piggies, Bendy, Brotato, Celeste, Clover Pit, Cruelty Squad, Deltatraveler, Doom 3, Duck Life 8, Endoparasitic, Fallout, Fear & Hunger, Getting Over It, Granny, Half-Life, Helltaker, Hollow Knight, Hollow Knight: Silksong, Iron Lung, Just Shapes & Beats, Minecraft Pocket Edition, MiSide, Pizza Tower: Scoutdigo, Plants vs. Zombies GOTY, Sonic CD, Sonic Mania, Stardew Valley, Super Mario 64, Terraria, Totally Accurate Battle Simulator, ULTRAKILL, Untitled Goose Game, Who's Your Daddy?, and Your Only Move is Hustle.
+
+These builds are hosted by GN Math and load in the Xyfer player only when selected. Xyfer does not copy their game assets. Availability, browser storage, controls, download size, and device support vary by port.
