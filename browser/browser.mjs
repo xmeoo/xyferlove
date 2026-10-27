@@ -1,6 +1,6 @@
 import { BareMuxConnection } from '../runtime/vendor/channel/index.mjs?v=10';
 import '../runtime/storage.js?v=10';
-import BrowserTransport from './transport.mjs?v=15';
+import BrowserTransport from './transport.mjs?v=21';
 
 const page = document.querySelector('#page');
 const start = document.querySelector('#start');
@@ -46,7 +46,7 @@ async function setup() {
       },
       flags: { rewriterLogs: false, syncxhr: false, interceptDownloads: false },
     });
-    const worker = new URL('sw.js?v=8', location.href).href;
+    const worker = new URL('sw.js?v=21', location.href).href;
     const workerPath = new URL('sw.js', location.href).pathname;
     await navigator.serviceWorker.register(worker, { scope: new URL('./', location.href).pathname, updateViaCache: 'none' });
     await new Promise((resolve, reject) => {
