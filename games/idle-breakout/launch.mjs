@@ -1,5 +1,5 @@
-import { loadResource } from '../../runtime/loader.mjs?v=14';
-import { idleBase } from '../../runtime/settings.mjs?v=14';
+import { loadResource } from '../../runtime/loader.mjs?v=15';
+import { idleBase } from '../../runtime/settings.mjs?v=15';
 
 const label = document.querySelector('#label');
 const progress = document.querySelector('#progress');

@@ -45,3 +45,9 @@ Slope is integrated from the clean Unity WebGL build at https://github.com/mcale
 ## 2048 and Hextris
 
 2048 is imported from https://github.com/gabrielecirulli/2048 at commit `478b6ec346e3787f589e4af751378d06ded4cbbc` under its MIT license. Hextris is imported from https://github.com/Hextris/hextris at commit `3f4847dc8fd7dab3d1c87e6324b9159d92fbd396` under GPL-3.0. Both games and their icons are hosted locally. Hextris's legacy advertisements, analytics, store badges, and social-share controls are removed.
+
+## Block Blast, FNAE, and FNAF 1–4
+
+Block Blast uses SomeRandomFella/portsandrips at commit `67547cbcdb21614540b26405e30cb54085890480`; its launcher is corrected to include all six chunks listed by the upstream manifest. FNAE uses web-ports/fnae at commit `ce3e15db144629f468916e186bc11547098706a2`. FNAF 1–4 use irv77/hd_fnaf at commit `8ddade73bcf0c30f4535d48af778d238f8ffd5a6`.
+
+These large builds remain pinned at their upstream repositories and load only when opened. Approximate downloads are 118 MB for Block Blast, 156 MB for FNAE, 167 MB for FNAF 1, 182 MB for FNAF 2, 191 MB for FNAF 3, and 357 MB for FNAF 4.

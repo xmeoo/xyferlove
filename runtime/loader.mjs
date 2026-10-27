@@ -1,6 +1,6 @@
 import { BareMuxConnection } from './vendor/channel/index.mjs?v=10';
-import { assetBase, cattleBase, allowedTarget, packAddress, unpackAddress, hosts } from './settings.mjs?v=14';
-import GameTransport from './session.mjs?v=14';
+import { assetBase, cattleBase, allowedTarget, packAddress, unpackAddress, hosts } from './settings.mjs?v=15';
+import GameTransport from './session.mjs?v=15';
 import './storage.js?v=10';
 
 const nativeFetch = window.xyferBrowserFetch || window.fetch.bind(window);
@@ -46,7 +46,7 @@ async function start() {
     flags: { rewriterLogs: false, syncxhr: false, interceptDownloads: false },
   });
   phase = 'S4';
-  const workerURL = new URL('worker.js?v=14', root).href;
+  const workerURL = new URL('worker.js?v=15', root).href;
   await navigator.serviceWorker.register(workerURL, { scope: root.pathname, updateViaCache: 'none' });
   await new Promise((resolve, reject) => {
     const check = () => {
