@@ -12,6 +12,12 @@ const history = [];
 let position = -1;
 let controllerPromise;
 let loading = false;
+const params = new URLSearchParams(location.search);
+const embeddedTarget = params.get('embed') === '1' ? target(params.get('url') || '') : null;
+if (embeddedTarget) {
+  document.body.classList.add('embedded');
+  document.querySelector('#start h1').textContent = 'Connecting to game…';
+}
 function message(value) { status.textContent = value; status.hidden = !value; }
 const networkEvents = new BroadcastChannel('xyfer-network');
 networkEvents.onmessage = ({data}) => { if (loading && data?.message) message(data.message); };
@@ -46,7 +52,7 @@ async function setup() {
       },
       flags: { rewriterLogs: false, syncxhr: false, interceptDownloads: false },
     });
-    const worker = new URL('sw.js?v=21', location.href).href;
+    const worker = new URL('sw.js?v=22', location.href).href;
     const workerPath = new URL('sw.js', location.href).pathname;
     await navigator.serviceWorker.register(worker, { scope: new URL('./', location.href).pathname, updateViaCache: 'none' });
     await new Promise((resolve, reject) => {
@@ -93,3 +99,4 @@ window.addEventListener('message', event => {
 });
 parent.postMessage({ type: 'xyfer-browser-ready' }, location.origin);
 controls();
+if (embeddedTarget) show(embeddedTarget);

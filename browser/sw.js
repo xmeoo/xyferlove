@@ -21,7 +21,15 @@ self.addEventListener('fetch', event => {
     try {
       const proxy = await engine();
       if (!proxy.route(event)) return new Response('Invalid browser address', { status: 400 });
-      return await proxy.fetch(event);
+      const response = await proxy.fetch(event);
+      if (event.request.mode === 'navigate') {
+        const headers = new Headers(response.headers);
+        headers.set('Content-Type', 'text/html; charset=utf-8');
+        headers.delete('Content-Length');
+        headers.delete('Content-Encoding');
+        return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+      }
+      return response;
     } catch (error) {
       console.error('Browser request failed', error);
       return new Response('Unable to load this page.', { status: 502 });
