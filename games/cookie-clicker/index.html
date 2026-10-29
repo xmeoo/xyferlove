@@ -8,7 +8,8 @@
 	var SAVESUFFIX='';
 	var App=typeof App==='undefined'?0:App;
 	var PRESETMODS=[];
-	var LOCAL=(App || !window.location.hostname || window.location.hostname==='localhost' || window.location.hostname==='127.0.0.1');
+	// Xyfer ships this complete port locally, so CDN and GitHub-hosted builds are valid.
+	var LOCAL=true;
 </script>
 
 <!-- external -->
