@@ -148,6 +148,8 @@ for(const [slug,game] of Object.entries(ultraCatalogPorts))catalogPortBuilds[slu
 for(const [slug,game] of Object.entries(maxCatalogPorts))catalogPortBuilds[slug]=game.file;
 const catalogSource='https://gn-math.dev/s/EE0_FEFXflkxUx5iECccXCcNRB9_GDdDXysSex5LLgFQGDgFPFIDP1U8DFQnJF8MOBh9/';
 for(const [slug,file] of Object.entries(catalogPortBuilds))Object.assign(catalog[slug],{path:`browser/?embed=1&url=${encodeURIComponent(catalogSource+file)}&v=39`,external:false,hostedBuild:true});
+Object.assign(catalog['flappy-bird-x129'],{path:'games/flappy-bird/',external:false,hostedBuild:true});
+Object.assign(catalog['cookie-clicker'],{path:'games/cookie-clicker/',external:false,hostedBuild:true});
 Object.assign(catalog['slime-rancher'],{path:'https://slimeranchers.com/play/',external:false,hostedBuild:true});
 Object.assign(catalog['draw-joust-z387'],{path:'https://www.bubbleshooter.net/embed.php?id=10222',external:false,hostedBuild:true});
 const home=document.querySelector('#home'),siteBrowser=document.querySelector('#site-browser'),games=document.querySelector('#games'),apps=document.querySelector('#apps'),ai=document.querySelector('#ai'),chat=document.querySelector('#chat'),settings=document.querySelector('#settings'),player=document.querySelector('#player'),frame=document.querySelector('#frame'),background=document.querySelector('.backdrop'),prefKey='xyfer-preferences';
