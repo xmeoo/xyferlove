@@ -16,7 +16,6 @@ const params = new URLSearchParams(location.search);
 const embeddedTarget = params.get('embed') === '1' ? target(params.get('url') || '') : null;
 if (embeddedTarget) {
   document.body.classList.add('embedded');
-  document.querySelector('#start h1').textContent = 'Connecting to game…';
 }
 function message(value) { status.textContent = value; status.hidden = !value; }
 const networkEvents = new BroadcastChannel('xyfer-network');
