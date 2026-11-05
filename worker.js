@@ -14,6 +14,7 @@ function configuredEngine() {
   return configured;
 }
 const dataPath = base.pathname + 'runtime/data/';
+const routePath = base.pathname + 'route/';
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', event => event.waitUntil(self.clients.claim()));
 self.addEventListener('message', event => {
@@ -22,6 +23,24 @@ self.addEventListener('message', event => {
 async function handle(event) {
   const url = new URL(event.request.url);
   if (url.origin !== base.origin || !url.pathname.startsWith(base.pathname)) return fetch(event.request);
+  if (url.pathname.startsWith(routePath)) {
+    try {
+      const proxy = await configuredEngine();
+      if (!proxy.route(event)) return new Response('Invalid game address', { status: 400 });
+      const response = await proxy.fetch(event);
+      if (event.request.mode === 'navigate') {
+        const headers = new Headers(response.headers);
+        headers.set('Content-Type', 'text/html; charset=utf-8');
+        headers.delete('Content-Length');
+        headers.delete('Content-Encoding');
+        return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+      }
+      return response;
+    } catch (error) {
+      console.error('Game request failed', error);
+      return new Response('Unable to load this game.', { status: 502 });
+    }
+  }
   if (url.pathname.startsWith(dataPath)) {
     try {
       const value = url.pathname.slice(dataPath.length).split('').reverse().join('').replaceAll('-', '+').replaceAll('_', '/');
