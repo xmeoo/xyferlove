@@ -1,5 +1,5 @@
 const API_URL = 'https://api.dawvq.com/v1/chat/completions';
-const MODEL = 'mimo-v2.5';
+const MODEL = 'mimo-v2.6-flash';
 const ALLOWED_ORIGINS = new Set([
   'https://xmeoo.github.io',
   'https://cdn.jsdelivr.net'
@@ -64,6 +64,14 @@ function reply(body, status, origin) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.pathname === '/chat/messages') {
+      const origin = request.headers.get('Origin') || '';
+      if (!ALLOWED_ORIGINS.has(origin)) return new Response('Forbidden', { status: 403 });
+      if (request.method === 'OPTIONS') return new Response(null,{status:204,headers:cors(origin)});
+      if (request.method === 'GET') {const after=Math.max(0,Number(url.searchParams.get('after'))||0),rows=await env.CHAT_DB.prepare('SELECT id,sender,name,text,time FROM messages WHERE time > ? ORDER BY time ASC LIMIT 100').bind(after).all();return reply({messages:rows.results||[]},200,origin)}
+      if (request.method === 'POST') {let data;try{data=await request.json()}catch{return reply({error:'Invalid JSON'},400,origin)}const text=typeof data.text==='string'?data.text.trim().slice(0,400):'',name=cleanChatName(data.name),sender=String(data.sender||'').slice(0,80);if(!text||!sender)return reply({error:'Invalid message'},400,origin);const message={id:`${Date.now()}-${crypto.randomUUID()}`,sender,name,text,time:Date.now()};await env.CHAT_DB.prepare('INSERT INTO messages(id,sender,name,text,time) VALUES(?,?,?,?,?)').bind(message.id,message.sender,message.name,message.text,message.time).run();await env.CHAT_DB.prepare('DELETE FROM messages WHERE id NOT IN (SELECT id FROM messages ORDER BY time DESC LIMIT 100)').run();return reply({message},201,origin)}
+      return reply({error:'Method not allowed'},405,origin);
+    }
     if (url.pathname.startsWith('/gn/')) {
       if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS', 'Access-Control-Allow-Headers': 'Range', 'Access-Control-Max-Age': '86400' } });
       if (request.method !== 'GET' && request.method !== 'HEAD') return new Response('Method not allowed', { status: 405 });
@@ -105,3 +113,4 @@ export default {
     }
   }
 };
+function cleanChatName(value){return String(value||'').replace(/[\u0000-\u001f\u007f]/g,'').trim().slice(0,24)||'guest'}
