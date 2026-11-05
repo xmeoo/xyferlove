@@ -164,7 +164,7 @@ for(const [slug,game] of Object.entries(megaCatalogPorts))catalogPortBuilds[slug
 for(const [slug,game] of Object.entries(ultraCatalogPorts))catalogPortBuilds[slug]=game.file;
 for(const [slug,game] of Object.entries(maxCatalogPorts))catalogPortBuilds[slug]=game.file;
 const catalogSource='https://gn-math.dev/s/EE0_FEFXflkxUx5iECccXCcNRB9_GDdDXysSex5LLgFQGDgFPFIDP1U8DFQnJF8MOBh9/';
-for(const [slug,file] of Object.entries(catalogPortBuilds))Object.assign(catalog[slug],{path:`browser/?embed=1&url=${encodeURIComponent(catalogSource+file)}&v=39`,external:false,hostedBuild:true});
+for(const [slug,file] of Object.entries(catalogPortBuilds))Object.assign(catalog[slug],{path:`browser/index.html?embed=1&url=${encodeURIComponent(catalogSource+file)}&v=46`,external:false,hostedBuild:true});
 Object.assign(catalog['flappy-bird-x129'],{path:'games/flappy-bird/',external:false,hostedBuild:true});
 Object.assign(catalog['cookie-clicker'],{path:'games/cookie-clicker/',external:false,hostedBuild:true});
 Object.assign(catalog['cut-the-rope'],{path:'games/cut-the-rope/',external:false,hostedBuild:true});
