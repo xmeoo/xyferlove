@@ -2,7 +2,8 @@ const API_URL = 'https://api.dawvq.com/v1/chat/completions';
 const MODEL = 'mimo-v2.6-flash';
 const ALLOWED_ORIGINS = new Set([
   'https://xmeoo.github.io',
-  'https://cdn.jsdelivr.net'
+  'https://cdn.jsdelivr.net',
+  'https://xyferlove.surge.sh'
 ]);
 
 function cors(origin) {
